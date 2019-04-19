@@ -3,7 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- Disable conflict attribute: https://github.com/dotnet/sdk/blob/7c52b29cb26c6d90439070dc8840d257306123d6/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets#L25-L37 -->
+    <!-- do not use <GenerateAssemblyInfo>false</GenerateAssemblyInfo> if you are using UserSecrets or other AssemblyInfo item. -->
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
 
   <PropertyGroup>
