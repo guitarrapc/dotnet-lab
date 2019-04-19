@@ -4,7 +4,7 @@ There are many cases you want to use git versions to identify "which version is 
 
 Let's see 3 way to accomplish this usecase.
 
-### Nerdbank.GitVersioning
+### [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning)
 
 Note: if you are using Git Shallow Clone, this library never works due to git-height comcept.
 
@@ -20,7 +20,21 @@ Here's sample.
 
 ![](docs/NerdbankGitVersioning.png)
 
-### GitInfo
+Good point is, it embbeded gitversion into path version. Also it offers Build configuration.
+Bad point is, it never work with git-shallow clone.
+
+### [GitInfo](https://github.com/kzu/GitInfo/tree/master/src/GitInfo)
+
+Other simple concept tool is GitInfo, this library will offer nuget library.
+
+To access Version info, build at least onetime since nuget installed, then use `ThisAssembly`.
+
+Here's sample.
+
+![](docs/GitInfo.png)
+
+Good point is, it simply embedded gitversion.
+Bad point is, nothing. just simple enough.
 
 ### Self service
 
