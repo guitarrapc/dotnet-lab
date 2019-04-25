@@ -13,6 +13,9 @@ namespace GitInfoConsole
             Console.WriteLine($"{nameof(ThisAssembly.Git.IsDirty)}: {ThisAssembly.Git.IsDirty}");
             Console.WriteLine($"{nameof(ThisAssembly.Git.Sha)}: {ThisAssembly.Git.Sha}");
             Console.WriteLine($"{nameof(ThisAssembly.Git.Tag)}: {ThisAssembly.Git.Tag}");
+            Console.WriteLine($"{nameof(ThisAssembly.Git.BaseVersion.Major)}: {ThisAssembly.Git.BaseVersion.Major}");
+            Console.WriteLine($"{nameof(ThisAssembly.Git.BaseVersion.Minor)}: {ThisAssembly.Git.BaseVersion.Minor}");
+            Console.WriteLine($"{nameof(ThisAssembly.Git.BaseVersion.Patch)}: {ThisAssembly.Git.BaseVersion.Patch}");
             Console.WriteLine($"{nameof(ThisAssembly.Git.SemVer.DashLabel)}: {ThisAssembly.Git.SemVer.DashLabel}");
             Console.WriteLine($"{nameof(ThisAssembly.Git.SemVer.Label)}: {ThisAssembly.Git.SemVer.Label}");
             Console.WriteLine($"{nameof(ThisAssembly.Git.SemVer.Major)}: {ThisAssembly.Git.SemVer.Major}");
