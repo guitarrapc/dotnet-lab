@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace UnhandledException
 {
@@ -7,9 +7,9 @@ namespace UnhandledException
         static void Main(string[] args)
         {
             Do();
-            DoNot();            
+            DoNot();
         }
-        
+
         private static void Do()
         {
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
@@ -17,7 +17,7 @@ namespace UnhandledException
                 // You can catch unhandled exception without try/catch root execution point.
                 var ex = (Exception)e.ExceptionObject;
                 Console.WriteLine($"UnhandledException occured. {ex.GetType().FullName}, {ex.Message}, {ex.StackTrace}");
-                
+
                 // if you want handle exception as normal, you may able to use Exit(int);
                 //Environment.Exit(1);
             };

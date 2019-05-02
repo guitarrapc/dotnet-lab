@@ -27,7 +27,7 @@ namespace RedisConnectionAppSettings
             // POCO
             var employee = new Employee
             {
-                Id= "007",
+                Id = "007",
                 Name = "Davide Columnbo",
                 Age = 100,
             };
