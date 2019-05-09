@@ -5,7 +5,7 @@ using StackExchange.Redis.Extensions.Core.Configuration;
 using System;
 using System.Threading.Tasks;
 
-namespace RedisConnectionElastiCacheEncrypted
+namespace RedisConnectionTls
 {
     class Program
     {

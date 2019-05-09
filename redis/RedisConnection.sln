@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisConnection", "RedisConnection\RedisConnection.csproj", "{3335ACE5-F4E2-40BF-9103-7C35449FA4BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnection", "RedisConnection\RedisConnection.csproj", "{3335ACE5-F4E2-40BF-9103-7C35449FA4BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisConnectionComplexConfig", "RedisConnectionComplexConfig\RedisConnectionComplexConfig.csproj", "{B02A6199-84F1-406A-8F71-E300700EE72D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionComplexConfig", "RedisConnectionComplexConfig\RedisConnectionComplexConfig.csproj", "{B02A6199-84F1-406A-8F71-E300700EE72D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisConnectionAppSettings", "RedisConnectionAppSettings\RedisConnectionAppSettings.csproj", "{BD68DF7A-EE51-4FA8-8438-C948D1B9C80C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionAppSettings", "RedisConnectionAppSettings\RedisConnectionAppSettings.csproj", "{BD68DF7A-EE51-4FA8-8438-C948D1B9C80C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionElastiCacheEncrypted", "RedisConnectionElastiCacheEncrypted\RedisConnectionElastiCacheEncrypted.csproj", "{309C0437-6FA8-4AB8-84B6-6544E72F6B61}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionTls", "RedisConnectionTls\RedisConnectionTls.csproj", "{75730A9E-F9CF-435B-944E-F10DE7326F2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{BD68DF7A-EE51-4FA8-8438-C948D1B9C80C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD68DF7A-EE51-4FA8-8438-C948D1B9C80C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD68DF7A-EE51-4FA8-8438-C948D1B9C80C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{309C0437-6FA8-4AB8-84B6-6544E72F6B61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{309C0437-6FA8-4AB8-84B6-6544E72F6B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{309C0437-6FA8-4AB8-84B6-6544E72F6B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{309C0437-6FA8-4AB8-84B6-6544E72F6B61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
