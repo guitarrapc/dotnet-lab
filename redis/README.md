@@ -15,3 +15,9 @@ Also using [Utf8json](https://github.com/neuecc/Utf8Json) to serialize/deseriali
 ### RedisConnectionAppSettings
 
 Similar to RedisConnectionComplexConfig but using appsettings.json to define connections.
+
+### RedisConnectionElastiCacheEncrypted
+
+Similar to RedisConnectionAppSettings, but connect to Elasticache which enables [In-Transit Encryption (TLS)](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/in-transit-encryption.html).
+
+You need enable `ssl:true` in appsettings.json.
