@@ -1,4 +1,4 @@
-﻿using StackExchange.Redis;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Core.Implementations;
@@ -23,8 +23,8 @@ namespace RedisConnectionAppSettings
             Client = new RedisCacheClient(ConnectionPool, new Utf8JsonSerializer(), config);
             RedisDb = Client.GetDbFromConfiguration();
             Db = RedisDb.Database;
-
         }
+
         public void Dispose()
         {
             Db.Multiplexer.GetSubscriber().UnsubscribeAll();

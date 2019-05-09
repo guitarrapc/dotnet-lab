@@ -1,4 +1,4 @@
-﻿using StackExchange.Redis;
+using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
 
@@ -17,6 +17,7 @@ namespace RedisConnection
 
         static async Task Main(string[] args)
         {
+            Console.WriteLine("Create CacheClient and connecting ....");
             IDatabase cache = lazyConnection.Value.GetDatabase();
 
             // Commands

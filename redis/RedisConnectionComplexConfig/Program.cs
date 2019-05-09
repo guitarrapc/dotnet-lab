@@ -1,4 +1,4 @@
-﻿using StackExchange.Redis;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using System;
 using System.Threading.Tasks;
@@ -9,6 +9,7 @@ namespace RedisConnectionComplexConfig
     {
         static async Task Main(string[] args)
         {
+            Console.WriteLine("Create CacheClient and connecting ....");
             var cache = new CacheClient();
 
             // Commands

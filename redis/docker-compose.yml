@@ -4,3 +4,10 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
+    restart: always
+  redis_pass:
+      image: redis:latest
+      ports:
+        - 6380:6379
+      command: redis-server --appendonly yes --requirepass foobarhogemoge
+      restart: always
