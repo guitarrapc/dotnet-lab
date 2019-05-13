@@ -1,0 +1,15 @@
+version: '3'
+services:
+
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2017-CU11-ubuntu
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: 2^*sMgfYxDiHEE
+      MSSQL_PID: Standard
+      # japanese should use 1041, otherwise garbage character
+      MSSQL_LCID: 1041
+      MSSQL_COLLATION: Japanese_Bushu_Kakusu_140_CI_AS
