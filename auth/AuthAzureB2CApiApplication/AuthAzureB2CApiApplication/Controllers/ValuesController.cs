@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthApiApplication.Controllers
+namespace AuthAzureB2CApiApplication.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

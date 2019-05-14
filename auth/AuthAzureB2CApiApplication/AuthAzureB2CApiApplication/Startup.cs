@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace AuthApiApplication
+namespace AuthAzureB2CApiApplication
 {
     public class Startup
     {
@@ -29,7 +29,10 @@ namespace AuthApiApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
-                .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
+                .AddAzureADB2CBearer(options => Configuration.Bind(nameof(AzureADB2COptions), options))
+                .AddCookie();
+            services.Configure<AzureADB2COptions>(Configuration.GetSection(nameof(AzureADB2COptions)));
+            services.Configure<AzureAdB2cAuth>(Configuration.GetSection(nameof(AzureAdB2cAuth)));
 
             services.AddSwaggerGen(options =>
             {
