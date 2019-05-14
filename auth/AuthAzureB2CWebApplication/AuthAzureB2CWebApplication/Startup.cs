@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AuthAzureB2CWebApplication
 {
@@ -39,6 +40,8 @@ namespace AuthAzureB2CWebApplication
             services.AddAuthentication(AzureADB2CDefaults.AuthenticationScheme)
                 .AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
 
+            services.Configure<AzureADB2CWithApiOptions>(options => Configuration.Bind("AzureADB2C", options));
+
             services.Configure<OpenIdConnectOptions>(
                 AzureADB2CDefaults.OpenIdScheme, options =>
                 {
@@ -56,6 +59,7 @@ namespace AuthAzureB2CWebApplication
                 {
                     // Omitted for brevity
                 });
+            services.AddSingleton<IConfigureOptions<OpenIdConnectOptions>, AzureADB2COpenIdConnectOptionsConfigurator>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
