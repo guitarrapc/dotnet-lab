@@ -25,25 +25,8 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var request = HttpContext.Request;
-
-            if (User.Identity.IsAuthenticated)
-            {               
-                var identifier = User.Claims.Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault()?.Value;
-                var ckey = $".tmp_aspnet_jwtaccesstoken_{identifier}";
-                if (HttpContext.Request.Cookies.TryGetValue(ckey, out var value))
-                {
-                    HttpContext.Response.Headers.Add("X-Token", value);
-                }
-                else
-                {
-                    var result = await GetAuthenticationResultAsync();
-                    if (result != null)
-                    {
-                        HttpContext.Response.Headers.Add("X-AccessToken", result.AccessToken);
-                    }
-                }
-            }
+            var token = await GetAuthenticationTokenAsync();
+            HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
             return View();
         }
 
@@ -60,13 +43,13 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
             string responseString = "";
             try
             {
-                var result = await GetAuthenticationResultAsync();
+                var token = await GetAuthenticationTokenAsync();
 
                 HttpClient client = new HttpClient();
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, AzureAdB2COptions.ApiUrl);
 
                 // Add token to the Authorization header and make the request
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage response = await client.SendAsync(request);
 
                 // Handle the response
@@ -100,6 +83,29 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
         {
             ViewBag.Message = message;
             return View();
+        }
+
+        private async Task<string> GetAuthenticationTokenAsync()
+        {
+            if (!User.Identity.IsAuthenticated) return null;
+
+            // get from cookie
+            var identifier = User.Claims.Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault()?.Value;
+            var ckey = $".tmp_aspnet_jwtaccesstoken_{identifier}";
+            if (HttpContext.Request.Cookies.TryGetValue(ckey, out var value))
+            {
+                return value;
+            }
+            else
+            {
+                // get from inmemory user cache
+                var result = await GetAuthenticationResultAsync();
+                if (result != null)
+                {
+                    return result.AccessToken;
+                }
+            }
+            return null;
         }
 
         /// <summary>
