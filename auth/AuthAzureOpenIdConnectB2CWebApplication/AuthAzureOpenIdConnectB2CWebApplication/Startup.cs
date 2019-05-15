@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +30,15 @@ namespace WebApp_OpenIDConnect_DotNet
                 sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddAzureAdB2C(options => Configuration.Bind(nameof(AzureAdB2COptions), options))
-            .AddCookie();
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
+            {
+                option.Cookie = new CookieBuilder
+                {
+                    SecurePolicy = CookieSecurePolicy.Always,
+                    MaxAge = TimeSpan.FromDays(7),
+                    HttpOnly = true,
+                };
+            });
 
             // Add framework services.
             services.AddMvc();

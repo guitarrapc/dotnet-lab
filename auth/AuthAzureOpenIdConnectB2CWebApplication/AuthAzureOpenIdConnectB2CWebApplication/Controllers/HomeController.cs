@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +23,29 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
             AzureAdB2COptions = azureAdB2COptions.Value;
         }
 
-        public async Task<IActionResult> Index() => View();
+        public async Task<IActionResult> Index()
+        {
+            var request = HttpContext.Request;
+
+            if (User.Identity.IsAuthenticated)
+            {               
+                var identifier = User.Claims.Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault()?.Value;
+                var ckey = $".tmp_aspnet_jwtaccesstoken_{identifier}";
+                if (HttpContext.Request.Cookies.TryGetValue(ckey, out var value))
+                {
+                    HttpContext.Response.Headers.Add("X-Token", value);
+                }
+                else
+                {
+                    var result = await GetAuthenticationResultAsync();
+                    if (result != null)
+                    {
+                        HttpContext.Response.Headers.Add("X-AccessToken", result.AccessToken);
+                    }
+                }
+            }
+            return View();
+        }
 
         [Authorize]
         public IActionResult About()
@@ -97,8 +119,9 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
             new MSALStaticCache(signedInUserID, this.HttpContext).EnablePersistence(cca.UserTokenCache);
 
             var accounts = await cca.GetAccountsAsync();
-            AuthenticationResult result = await cca.AcquireTokenSilent(scope, accounts.FirstOrDefault())
-                .ExecuteAsync();
+            AuthenticationResult result = accounts != null && accounts.Any()
+                ? await cca.AcquireTokenSilent(scope, accounts.FirstOrDefault()).ExecuteAsync()
+                : null;
             return result;
         }
     }

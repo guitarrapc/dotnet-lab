@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -12,6 +12,7 @@ using Microsoft.Identity.Client;
 using WebApp_OpenIDConnect_DotNet.Models;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp_OpenIDConnect_DotNet
 {
@@ -60,7 +61,7 @@ namespace WebApp_OpenIDConnect_DotNet
                     !policy.Equals(defaultPolicy))
                 {
                     context.ProtocolMessage.Scope = OpenIdConnectScope.OpenIdProfile;
-                    context.ProtocolMessage.ResponseType = OpenIdConnectResponseType.IdToken;
+                    context.ProtocolMessage.ResponseType = OpenIdConnectResponseType.CodeIdToken;
                     context.ProtocolMessage.IssuerAddress = context.ProtocolMessage.IssuerAddress.ToLower().Replace(defaultPolicy.ToLower(), policy.ToLower());
                     context.Properties.Items.Remove(AzureAdB2COptions.PolicyAuthenticationProperty);
                 }
@@ -111,9 +112,19 @@ namespace WebApp_OpenIDConnect_DotNet
 
                 try
                 {
+                    // get jwt id_token, accesstoken
                     AuthenticationResult result = await cca.AcquireTokenByAuthorizationCode(AzureAdB2COptions.ApiScopes.Split(' '), code)
                         .ExecuteAsync();
                     context.HandleCodeRedemption(result.AccessToken, result.IdToken);
+
+                    var ckey = $".tmp_aspnet_jwtaccesstoken_{context.JwtSecurityToken.Subject}";
+                    context.Response.Cookies.Delete(ckey);
+                    context.Response.Cookies.Append(ckey, result.AccessToken, new CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(30),
+                        MaxAge = TimeSpan.FromSeconds(30),
+                        Secure = true
+                    });
                 }
                 catch (Exception ex)
                 {
