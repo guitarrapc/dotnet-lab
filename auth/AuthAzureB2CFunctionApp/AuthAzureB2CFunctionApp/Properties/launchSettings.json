@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "AuthAzureB2CFunctionApp": {
+      "commandName": "Project"
+    }
+  }
+}
