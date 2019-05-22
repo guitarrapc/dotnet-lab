@@ -105,6 +105,7 @@ namespace AuthAzureB2CFunctionApp
                 return new BadRequestResult();
             var displayName = payload.Claims.FirstOrDefault(x => x.Type == "displayName")?.Value; // display name
             var signedInUserID = payload.Claims.FirstOrDefault(x => x.Type == "name")?.Value; // name
+            var name = string.IsNullOrEmpty(displayName) ? signedInUserID : displayName;
             var sub = payload.Claims.FirstOrDefault(x => x.Type == "sub")?.Value; // user id            
             var idp = payload.Claims.FirstOrDefault(x => x.Type == "idp")?.Value; // idp id
             bool.TryParse(payload.Claims.FirstOrDefault(x => x.Type == "newUser")?.Value, out bool isNewUser); // sign up only
@@ -113,9 +114,6 @@ namespace AuthAzureB2CFunctionApp
                 return new UnauthorizedResult();
             }
             var id_validTo = payload.ValidTo;
-
-            // setup username on front
-            var name = string.IsNullOrEmpty(idp) ? displayName : signedInUserID;
 
             // OAuth authorization code is contains in `code`, short live 10min.
             // https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/active-directory-b2c-reference-oauth-code
@@ -126,12 +124,17 @@ namespace AuthAzureB2CFunctionApp
             }
             var token = await GetAuthenticationResultAsync(codes.First(), redirectUri);
             var expireOn = token.ExpiresOn;
+
+            // set cookie
             req.HttpContext.Response.Cookies.Append(".aadb2c_access_token", token.AccessToken, new CookieOptions() { Expires = expireOn, Secure = true });
+            req.HttpContext.Response.Cookies.Append(".aadb2c_id_token", token.IdToken, new CookieOptions() { Expires = expireOn, Secure = true });
+
             return new OkObjectResult(new
             {
                 message = $"{(isNewUser ? $"successfully create account, welcome {name}!" : $"successfully login, welcome back {name}")}",
                 name = name,
                 idp = idp,
+                canResetPassword = string.IsNullOrEmpty(idp),
             });
         }
 
@@ -155,11 +158,6 @@ namespace AuthAzureB2CFunctionApp
             var payload = JwtPayload.Base64UrlDeserialize(idTokens.First().Split('.').Skip(1).FirstOrDefault());
             if (payload == null)
                 return new BadRequestResult();
-            var displayName = payload.Claims.FirstOrDefault(x => x.Type == "displayName")?.Value; // display name
-            var signedInUserID = payload.Claims.FirstOrDefault(x => x.Type == "name")?.Value; // name
-            var sub = payload.Claims.FirstOrDefault(x => x.Type == "sub")?.Value; // user id            
-            var idp = payload.Claims.FirstOrDefault(x => x.Type == "idp")?.Value; // idp id
-            var id_validTo = payload.ValidTo;
 
             return new OkObjectResult(new
             {
@@ -187,11 +185,6 @@ namespace AuthAzureB2CFunctionApp
             var payload = JwtPayload.Base64UrlDeserialize(idTokens.First().Split('.').Skip(1).FirstOrDefault());
             if (payload == null)
                 return new BadRequestResult();
-            var displayName = payload.Claims.FirstOrDefault(x => x.Type == "displayName")?.Value; // display name
-            var signedInUserID = payload.Claims.FirstOrDefault(x => x.Type == "name")?.Value; // name
-            var sub = payload.Claims.FirstOrDefault(x => x.Type == "sub")?.Value; // user id            
-            var idp = payload.Claims.FirstOrDefault(x => x.Type == "idp")?.Value; // idp id
-            var id_validTo = payload.ValidTo;
 
             return new OkObjectResult(new
             {
