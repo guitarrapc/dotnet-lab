@@ -126,8 +126,7 @@ namespace AuthAzureB2CFunctionApp
             }
             var token = await GetAuthenticationResultAsync(codes.First(), redirectUri);
             var expireOn = token.ExpiresOn;
-            req.HttpContext.Response.Cookies.Append(".aadb2c_access_token", token.AccessToken);
-            req.HttpContext.Response.Cookies.Append(".aadb2c_access_token_validuntil", expireOn.ToString("yyyy/MM/dd HH:mm:ss"));
+            req.HttpContext.Response.Cookies.Append(".aadb2c_access_token", token.AccessToken, new CookieOptions() { Expires = expireOn, Secure = true });
             return new OkObjectResult(new
             {
                 message = $"{(isNewUser ? $"successfully create account, welcome {name}!" : $"successfully login, welcome back {name}")}",
