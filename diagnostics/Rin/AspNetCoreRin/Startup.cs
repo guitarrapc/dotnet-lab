@@ -32,12 +32,25 @@ namespace AspNetCoreRin
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                // Add(option): Enable ASP.NET Core MVC support if the project built with ASP.NET Core MVC
+                .AddRinMvcSupport()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // Add: Register Rin services
+            services.AddRin();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Add: Enable request/response recording and serve a inspector frontend.
+            // Important: `UseRin` (Middlewares) must be top of the HTTP pipeline.
+            app.UseRin();
+
+            // Add(option): Enable ASP.NET Core MVC support if the project built with ASP.NET Core MVC
+            app.UseRinMvcSupport();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -48,6 +61,9 @@ namespace AspNetCoreRin
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            // Add: Enable Exception recorder. this handler must be after `UseDeveloperExceptionPage`.
+            app.UseRinDiagnosticsHandler();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

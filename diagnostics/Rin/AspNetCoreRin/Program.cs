@@ -19,6 +19,11 @@ namespace AspNetCoreRin
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging(configure =>
+                {
+                    // Add: Enable Rin Logger
+                    configure.UseRinLogger();
+                })
                 .UseStartup<Startup>();
     }
 }
