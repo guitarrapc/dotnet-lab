@@ -31,8 +31,8 @@ namespace AuthAzureB2CApiApplication
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
                 .AddAzureADB2CBearer(options => Configuration.Bind(nameof(AzureADB2COptions), options))
                 .AddCookie();
-            services.Configure<AzureADB2COptions>(Configuration.GetSection(nameof(AzureADB2COptions)));
-            services.Configure<AzureAdB2cAuth>(Configuration.GetSection(nameof(AzureAdB2cAuth)));
+            //services.Configure<AzureADB2COptions>(Configuration.GetSection(nameof(AzureADB2COptions)));
+            //services.Configure<AzureAdB2cAuth>(Configuration.GetSection(nameof(AzureAdB2cAuth)));
 
             services.AddSwaggerGen(options =>
             {
