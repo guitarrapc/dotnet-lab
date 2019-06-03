@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpanLibs", "SpanLibs\SpanLibs.csproj", "{1A9925B6-EE21-436B-9CCF-BA140D067034}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A9925B6-EE21-436B-9CCF-BA140D067034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A9925B6-EE21-436B-9CCF-BA140D067034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A9925B6-EE21-436B-9CCF-BA140D067034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A9925B6-EE21-436B-9CCF-BA140D067034}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BE51C9B4-9E8A-41E6-B356-12B9F2EA3502}
+	EndGlobalSection
+EndGlobal
