@@ -1,24 +1,38 @@
 <body>
     <script type="text/javascript">
 
-        var source = new EventSource('sse?username=hogemoge');
+        // Open a connection
+        let source = new EventSource('sse?username=hogemoge');
 
-        source.onmessage = function (event) {
-            console.log('onmessage: ' + event.data);
+        // When a connection is made
+        source.onopen = function () {
+            console.log('Opened connection ');
         };
 
-        source.onopen = function (event) {
-            console.log('onopen');
-        };
-
+        // A connection could not be made
         source.onerror = function (event) {
-            console.log('onerror');
+            console.log(event);
+        };
+
+        // When data is received
+        source.onmessage = function (event) {
+            console.log(event.data);
+        };
+
+        // A connection was closed
+        source.onclose = function (code, reason) {
+            console.log(code, reason);
         }
 
+        // Close the connection when the window is closed
+        window.addEventListener('beforeunload', function () {
+            source.close();
+        });
+
+        // custom event
         source.addEventListener("hogemoge", function (event) {
             console.log('onmessage: ' + event.data);
         });
-
 
     </script>
 </body>

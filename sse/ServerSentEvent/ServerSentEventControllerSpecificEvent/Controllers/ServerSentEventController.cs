@@ -51,6 +51,8 @@ namespace ServerSentEvent.Controllers
         [HttpGet]
         public async Task Get()
         {
+            // PoC: https://stackoverflow.com/questions/16096780/server-sent-events-with-multiple-users
+
             var response = Response;
             response.Headers.Add("Content-Type", "text/event-stream");
 

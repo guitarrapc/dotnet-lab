@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSentEventController",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSentEventMiddleware", "ServerSentEventMiddleware\ServerSentEventMiddleware.csproj", "{C638830D-1D56-4980-8311-20FD28BCDAFB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSentEventControllerSpecificEvent", "ServerSentEventControllerSpecificEvent\ServerSentEventControllerSpecificEvent.csproj", "{296B612E-E4EF-4C06-8DC0-6AEDA3BF55DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C638830D-1D56-4980-8311-20FD28BCDAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C638830D-1D56-4980-8311-20FD28BCDAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C638830D-1D56-4980-8311-20FD28BCDAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296B612E-E4EF-4C06-8DC0-6AEDA3BF55DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296B612E-E4EF-4C06-8DC0-6AEDA3BF55DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296B612E-E4EF-4C06-8DC0-6AEDA3BF55DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296B612E-E4EF-4C06-8DC0-6AEDA3BF55DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
