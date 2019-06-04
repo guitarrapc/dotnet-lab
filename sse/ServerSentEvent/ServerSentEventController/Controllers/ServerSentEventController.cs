@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ServerSentEvent.Controllers
 {
     /// <summary>
-    /// Use Controller instead of Middleware
+    /// ServerSentEvent provided as Controller
     /// </summary>
     [Route("sse")]
     public class ServerSentEventController : ControllerBase

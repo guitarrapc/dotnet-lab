@@ -45,8 +45,6 @@ namespace ServerSentEvent
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            // Uncomment to use Middleware instead of Controller
-            //app.UseSse();
             app.UseMvc();
         }
     }
