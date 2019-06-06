@@ -31,7 +31,7 @@ namespace AuthAzureB2CFunctionApp
 
         [FunctionName("auth")]
         public IActionResult Auth(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ExecutionContext context,
             ILogger log)
         {
@@ -47,9 +47,70 @@ namespace AuthAzureB2CFunctionApp
             return new RedirectResult(url);
         }
 
+        [FunctionName("accessToken")]
+        public async Task<IActionResult> AccessToken(
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+    ExecutionContext context,
+    ILogger log)
+        {
+            log.LogInformation($"{nameof(AccessToken)}: C# HTTP trigger function processed a request.");
+            var redirectUri = new Uri($"{req.Scheme}://{req.Host.Value}/{azureAdB2COptions.RedirectPathAuth}");
+            req.HttpContext.Items.TryGetValue("MS_AzureFunctionsRequestID", out var requestId);
+#if DEBUG
+            log.LogInformation($"Environment information");
+            LogParams("", redirectUri, "", "", "", context, log);
+#endif
+
+            using (var reader = new StreamReader(req.Body))
+            {
+                var body = await reader.ReadToEndAsync();
+                var authReply = JsonConvert.DeserializeObject<AuthReplyBody>(body);
+
+                // error action
+                if (authReply.HasError())
+                    return new BadRequestObjectResult(new
+                    {
+                        Message = authReply.error,
+                        Description = authReply.error_description,
+                        NextAction = "please reauthorize again.",
+                    });
+                if (authReply.IsMissingCode() || authReply.IsMissingIdToken())
+                    return new BadRequestObjectResult(new { error = "missing id_token, code." });
+                if (authReply.PayLoad == null)
+                    return new BadRequestObjectResult(new { error = "invalid id_token detected." });
+
+                // get user info from `id_token`
+                var response = authReply.GetAuthResponse();
+                if (string.IsNullOrEmpty(response.SignedInUserID))
+                    return new BadRequestObjectResult(new { error = "invalid id_token detected. Missing name property." });
+
+                // get access token
+                var token = await authReply.GetAuthenticationResultAsync(redirectUri, azureAdB2COptions);
+                if (string.IsNullOrEmpty(token.AccessToken))
+                    return new UnauthorizedResult();
+
+                // set cookie
+                var expireOn = token.ExpiresOn;
+                req.HttpContext.Response.Cookies.Append(".aadb2c_access_token", token.AccessToken, new CookieOptions() { Expires = expireOn, Secure = true });
+                req.HttpContext.Response.Cookies.Append(".aadb2c_id_token", token.IdToken, new CookieOptions() { Expires = expireOn, Secure = true });
+
+                return new OkObjectResult(new
+                {
+                    message = response.Message,
+                    name = response.Name,
+                    email = response.Email,
+                    idp = response.Idp,
+                    canResetPassword = response.CanResetPassword,
+#if DEBUG
+                    AuthorizationHeader = $"Bearer {token.AccessToken}",
+#endif
+                });
+            }
+        }
+
         [FunctionName("profile")]
         public IActionResult Profile(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ExecutionContext context,
             ILogger log)
         {
@@ -67,7 +128,7 @@ namespace AuthAzureB2CFunctionApp
 
         [FunctionName("resetpassword")]
         public IActionResult ResetPassword(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ExecutionContext context,
             ILogger log)
         {
@@ -96,45 +157,52 @@ namespace AuthAzureB2CFunctionApp
             LogParams("", redirectUri, "", "", "", context, log);
 #endif
 
-            // get user info from `id_token`
-            var idTokens = req.Form.Where(x => x.Key == "id_token").Select(x => x.Value).FirstOrDefault();
-            if (!idTokens.Any())
-                return new UnauthorizedResult();
-            var payload = JwtPayload.Base64UrlDeserialize(idTokens.First().Split('.').Skip(1).FirstOrDefault());
-            if (payload == null)
-                return new BadRequestResult();
-            var displayName = payload.Claims.FirstOrDefault(x => x.Type == "displayName")?.Value; // display name
-            var signedInUserID = payload.Claims.FirstOrDefault(x => x.Type == "name")?.Value; // name
-            var name = string.IsNullOrEmpty(displayName) ? signedInUserID : displayName;
-            var sub = payload.Claims.FirstOrDefault(x => x.Type == "sub")?.Value; // user id            
-            var idp = payload.Claims.FirstOrDefault(x => x.Type == "idp")?.Value; // idp id
-            bool.TryParse(payload.Claims.FirstOrDefault(x => x.Type == "newUser")?.Value, out bool isNewUser); // sign up only
-            if (string.IsNullOrEmpty(signedInUserID))
+            var id_token = req.Form.Where(x => x.Key == "id_token").Select(x => x.Value).FirstOrDefault();
+            var code = req.Form.Where(x => x.Key == "code").Select(x => x.Value).FirstOrDefault();
+            var authReply = new AuthReplyBody(id_token, code)
             {
-                return new UnauthorizedResult();
-            }
-            var id_validTo = payload.ValidTo;
+                error = req.Form.Where(x => x.Key == "error").Select(x => x.Value).FirstOrDefault(),
+                error_description = req.Form.Where(x => x.Key == "error_description").Select(x => x.Value).FirstOrDefault(),
+            };
 
-            // OAuth authorization code is contains in `code`, short live 10min.
-            // https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/active-directory-b2c-reference-oauth-code
-            var codes = req.Form.Where(x => x.Key == "code").FirstOrDefault().Value;
-            if (!codes.Any())
-            {
+            // error check
+            if (authReply.HasError())
+                return new BadRequestObjectResult(new
+                {
+                    Message = authReply.error,
+                    Description = authReply.error_description,
+                    NextAction = "please reauthorize again.",
+                });
+            if (authReply.IsMissingCode() || authReply.IsMissingIdToken())
+                return new BadRequestObjectResult(new { error = "missing id_token, code." });
+            if (authReply.PayLoad == null)
+                return new BadRequestObjectResult(new { error = "invalid id_token detected." });
+
+            // get user info from `id_token`
+            var response = authReply.GetAuthResponse();
+            if (string.IsNullOrEmpty(response.SignedInUserID))
                 return new UnauthorizedResult();
-            }
-            var token = await GetAuthenticationResultAsync(codes.First(), redirectUri);
-            var expireOn = token.ExpiresOn;
+
+            // get access token
+            var token = await authReply.GetAuthenticationResultAsync(redirectUri, azureAdB2COptions);
+            if (token.AccessToken == null)
+                return new UnauthorizedResult();
 
             // set cookie
+            var expireOn = token.ExpiresOn;
             req.HttpContext.Response.Cookies.Append(".aadb2c_access_token", token.AccessToken, new CookieOptions() { Expires = expireOn, Secure = true });
             req.HttpContext.Response.Cookies.Append(".aadb2c_id_token", token.IdToken, new CookieOptions() { Expires = expireOn, Secure = true });
 
             return new OkObjectResult(new
             {
-                message = $"{(isNewUser ? $"successfully create account, welcome {name}!" : $"successfully login, welcome back {name}")}",
-                name = name,
-                idp = idp,
-                canResetPassword = string.IsNullOrEmpty(idp),
+                message = response.Message,
+                name = response.Name,
+                email = response.Email,
+                idp = response.Idp,
+                canResetPassword = response.CanResetPassword,
+#if DEBUG
+                AuthorizationHeader = $"Bearer {token.AccessToken}",
+#endif
             });
         }
 
@@ -190,20 +258,6 @@ namespace AuthAzureB2CFunctionApp
             {
                 message = "successfully reset password."
             });
-        }
-
-        private async Task<AuthenticationResult> GetAuthenticationResultAsync(string code, Uri redirectUri)
-        {            
-            IConfidentialClientApplication app = ConfidentialClientApplicationBuilder.Create($"{azureAdB2COptions.ClientId}")
-                .WithRedirectUri(redirectUri.AbsoluteUri)
-                .WithClientSecret(azureAdB2COptions.ClientSecret)
-                .WithB2CAuthority(azureAdB2COptions.Authority)
-                .Build();
-
-            // make sure you cannot use Refresh Token with MSAL anymore.
-            var scopes = azureAdB2COptions.ApiScopes.Split(' ');
-            var auth = await app.AcquireTokenByAuthorizationCode(scopes, code).ExecuteAsync();
-            return auth;
         }
 
         private void LogParams(string profile, Uri redirectUri, string traceIdentifier, object requestId, string url, ExecutionContext context, ILogger log)

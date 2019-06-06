@@ -6,15 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.Swagger;
+using ServerSentEvent.Middlewares;
 
-namespace AuthAzureB2CApiApplication
+namespace ServerSentEvent
 {
     public class Startup
     {
@@ -28,18 +26,6 @@ namespace AuthAzureB2CApiApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
-                .AddAzureADB2CBearer(options => Configuration.Bind(nameof(AzureADB2COptions), options))
-                .AddCookie();
-            //services.Configure<AzureADB2COptions>(Configuration.GetSection(nameof(AzureADB2COptions)));
-            //services.Configure<AzureAdB2cAuth>(Configuration.GetSection(nameof(AzureAdB2cAuth)));
-
-            services.AddSwaggerGen(options =>
-            {
-                // APIの署名を記載
-                options.SwaggerDoc("v1", new Info { Title = "Auth API", Version = "v1" });
-            });
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -56,14 +42,12 @@ namespace AuthAzureB2CApiApplication
                 app.UseHsts();
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SAMPLE API V1");
-            });
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.UseAuthentication();
+
+            // ServerSentEvent provided as Middleware
+            app.UseSse();
             app.UseMvc();
         }
     }
