@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  mssql:
+    container_name: mssql_ef
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    ports:
+      - 1433:1433
+    volumes:
+      - ./sql:/usr/src/app
+      - ./src/DatabaseEF/dbo/Tables/:/usr/src/app/table/
+    working_dir: /usr/src/app
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: iamSuperUser!!!!12345
+      MSSQL_PID: Standard
+      # japanese should use 1041, otherwise garbage character
+      MSSQL_LCID: 1041
+      MSSQL_COLLATION: Japanese_Bushu_Kakusu_140_CI_AS
+      SQLCMDUSER: SA
+      SQLCMDSERVER: localhost,1433
+      SQLCMDDBNAME: test
