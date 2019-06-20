@@ -1,7 +1,21 @@
 version: '3'
 services:
 
-  mssql:
+  web_ef:
+    container_name: aspnetcore_ef
+    image: aspnetcore_ef
+    build:
+      context: ./src
+      dockerfile: ./WebApplicationEF/Dockerfile
+    ports:
+      - 5001:443
+      - 5000:80
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    networks:
+      - webdb
+
+  mssql_ef:
     container_name: mssql_ef
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     ports:
@@ -21,3 +35,9 @@ services:
       SQLCMDUSER: SA
       SQLCMDSERVER: localhost,1433
       SQLCMDDBNAME: test
+    networks:
+      - webdb
+
+networks:
+  webdb:
+    driver: bridge
