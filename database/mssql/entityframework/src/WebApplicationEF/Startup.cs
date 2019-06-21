@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApplicationEF.Data;
@@ -17,9 +19,11 @@ namespace WebApplicationEF
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment _environment;
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -35,7 +39,27 @@ namespace WebApplicationEF
             });
 
             var connection = Configuration.GetConnectionString("BloggingDatabase");
-            services.AddDbContext<BloggingContext>(options => options.UseSqlServer(connection));
+
+            // do not use raw DbContext, but use DbContext Pooling for higher performance and low impact to DB Server.
+            // ref: https://docs.microsoft.com/ja-jp/ef/core/what-is-new/ef-core-2.0
+            // No pooling
+            // services.AddDbContext<BloggingContext>(options => options.UseSqlServer(connection));
+
+            // Pooling
+            // basic: https://github.com/aspnet/EntityFrameworkCore/issues/10169
+            // optimization: https://rehansaeed.com/optimally-configuring-entity-framework-core/
+            var connectionBuilder = new SqlConnectionStringBuilder(connection)
+            {
+                ConnectRetryCount = 5,
+                ConnectRetryInterval = 2,
+                MaxPoolSize = 500, // default 128 connections
+                MinPoolSize = 100,
+            };
+            services.AddDbContextPool<BloggingContext>(optionBuilder => optionBuilder.UseSqlServer(connectionBuilder.ConnectionString,
+                options => options.EnableRetryOnFailure())
+                .ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning))
+                .EnableSensitiveDataLogging(_environment.IsDevelopment())
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             // DI
             services.AddTransient<IBlogUseCase, UserUseCase>();
