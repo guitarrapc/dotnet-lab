@@ -1,6 +1,8 @@
 ## step to prepare model/data/controller/view
 
-### 1. run followings at WebApplicationEF directory to init db class.
+### choice 1. run followings at WebApplicationEF directory to init db class.
+
+use migration to create table on database. (Model first)
 
 ```powershell
 dotnet ef migrations add InitialCreate
@@ -15,6 +17,15 @@ dotnet aspnet-codegenerator controller -name PostsController -m Post -dc Bloggin
 dotnet aspnet-codegenerator controller -name UsersController -m User -dc BloggingContext --relativeFolderPath Controllers --useDefaultLayout
 ```
 
-## 2. manage Database sql with DatabaseEF
+### choice 2. manage Database .sql with DatabaseEF
 
-Connect to database and update sql
+use sql to create table on database. (DB first)
+
+* Connect to database and update sql.
+
+## Optimization
+
+* DO: Use ConnectionPooling with `AddDbContextPool`, do not use simple `AddDbContext` as it creates new instance of the DbContext for each request.
+    * Good: `services.AddDbContextPool<BloggingContext>(optionBuilder => optionBuilder.UseSqlServer(connectionBuilder.ConnectionString));`
+    * Bad:  `services.AddDbContext<BloggingContext>(options => options.UseSqlServer(connection));` // Startup.cs
+        * no pooling results, 5-10min to kill sqlserver as of over pressure on memory.
