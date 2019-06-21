@@ -8,8 +8,8 @@ services:
       context: ./src
       dockerfile: ./WebApplicationEF/Dockerfile
     ports:
-      - 5001:443
-      - 5000:80
+      - 5432:443
+      - 5431:80
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     networks:
@@ -19,7 +19,7 @@ services:
     container_name: mssql_ef
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     ports:
-      - 1433:1433
+      - 1434:1433
     volumes:
       - ./sql:/usr/src/app
       - ./src/DatabaseEF/dbo/Tables/:/usr/src/app/table/
