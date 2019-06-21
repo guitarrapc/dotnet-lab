@@ -12,5 +12,7 @@ namespace WebApplicationEF.Models
         private readonly IPAddress hostIp = System.Net.Dns.GetHostAddresses(hostName)?.FirstOrDefault();
         public string HostName => hostName;
         public IPAddress HostIp => hostIp;
+        public int ConnectionPoolCount { get; set; }
+        public bool IsFromConnectionPool { get; set; }
     }
 }

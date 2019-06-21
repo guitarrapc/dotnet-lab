@@ -1,18 +1,27 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using WebApplicationEF.Data;
 using WebApplicationEF.Models;
 
 namespace WebApplicationEF.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly BloggingContext _context;
+
+        public HomeController(BloggingContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            var vm = new SystemViewModel();
+            var (isPool, poolCount) = DbConnectionMonitor.GetConnectionPoolCount(_context);
+            var vm = new SystemViewModel()
+            {
+                ConnectionPoolCount = poolCount,
+                IsFromConnectionPool = isPool,
+            };
             return View(vm);
         }
 
