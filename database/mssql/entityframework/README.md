@@ -12,6 +12,16 @@ open cmd/powershell/terminal and run docker-compose.
 docker-compose up -d
 ```
 
+access to the content, which runs ef.
+
+```
+# cmd/terminal
+curl http://localhost:5431/Blogs
+
+# powershell
+curl.exe http://localhost:5431/Blogs
+```
+
 stop container when you want to quit.
 
 ```
