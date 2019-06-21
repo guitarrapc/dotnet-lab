@@ -1,19 +1,27 @@
 version: '3'
 services:
 
+  lb_ef:
+    image: lb
+    build: ./lb
+    ports:
+      - 8080:80
+    networks:
+      - front
+      - app
+
   web_ef:
-    container_name: aspnetcore_ef
     image: aspnetcore_ef
     build:
       context: ./src
       dockerfile: ./WebApplicationEF/Dockerfile
     ports:
-      - 5432:443
-      - 5431:80
+      - 80
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     networks:
-      - webdb
+      - app
+      - db
 
   mssql_ef:
     container_name: mssql_ef
@@ -36,8 +44,12 @@ services:
       SQLCMDSERVER: localhost,1433
       SQLCMDDBNAME: test
     networks:
-      - webdb
+      - db
 
 networks:
-  webdb:
+  front:
+    driver: bridge
+  app:
+    driver: bridge
+  db:
     driver: bridge
