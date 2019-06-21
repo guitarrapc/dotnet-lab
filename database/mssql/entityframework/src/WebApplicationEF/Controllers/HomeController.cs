@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApplicationEF.Models;
-using WebApplicationEF.UseCase;
 
 namespace WebApplicationEF.Controllers
 {
@@ -13,7 +12,8 @@ namespace WebApplicationEF.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var vm = new SystemViewModel();
+            return View(vm);
         }
 
         public IActionResult Privacy()
