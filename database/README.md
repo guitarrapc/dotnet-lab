@@ -76,3 +76,7 @@ Migration は、コードファーストなクラスと DBの完全同期はせ�
 
 DB の変更を戻す or DBの対象テーブルなどをリネーム、Migration をあてる、リネームしたテーブルのデータを移すかMigrationで作ったテーブルを排除。
 
+
+* DB の同期をしたい
+
+docker などにMigration をあてて、Workbench で対象のテーブルとスキーマ比較、実行。
