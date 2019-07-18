@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplicationEF.Data;
 
-namespace WebApplicationEF.UseCase
+namespace WebApplicationEF.UseCases
 {
     public interface IBlogUseCase
     {
