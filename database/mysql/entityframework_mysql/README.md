@@ -40,11 +40,11 @@ curl.exe http://localhost:8080/Blogs
 comment out nginx lb settings to listen 5 backend.
 
 ```
-    server entityframework_mssql_web_ef_1:80 weight=5 max_fails=3 fail_timeout=30s;
-    server entityframework_mssql_web_ef_2:80 weight=5 max_fails=3 fail_timeout=30s;
-    server entityframework_mssql_web_ef_3:80 weight=5 max_fails=3 fail_timeout=30s;
-    server entityframework_mssql_web_ef_4:80 weight=5 max_fails=3 fail_timeout=30s;
-    server entityframework_mssql_web_ef_5:80 weight=5 max_fails=3 fail_timeout=30s;
+    server entityframework_mysql_web_ef_1:80 weight=5 max_fails=3 fail_timeout=30s;
+    server entityframework_mysql_web_ef_2:80 weight=5 max_fails=3 fail_timeout=30s;
+    server entityframework_mysql_web_ef_3:80 weight=5 max_fails=3 fail_timeout=30s;
+    server entityframework_mysql_web_ef_4:80 weight=5 max_fails=3 fail_timeout=30s;
+    server entityframework_mysql_web_ef_5:80 weight=5 max_fails=3 fail_timeout=30s;
 ```
 
 scale web container to 5.

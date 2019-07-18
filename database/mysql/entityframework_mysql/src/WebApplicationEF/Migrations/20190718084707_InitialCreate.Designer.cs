@@ -9,7 +9,7 @@ using WebApplicationEF.Data;
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20190718071957_InitialCreate")]
+    [Migration("20190718084707_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

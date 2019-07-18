@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using WebApplicationEF.Data;
 using WebApplicationEF.Models;
 
@@ -8,10 +9,12 @@ namespace WebApplicationEF.Controllers
     public class HomeController : Controller
     {
         private readonly BloggingContext _context;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(BloggingContext context)
+        public HomeController(BloggingContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -19,6 +22,7 @@ namespace WebApplicationEF.Controllers
             var (isPool, poolCount) = DbConnectionMonitor.GetConnectionPoolCount(_context);
             var vm = new SystemViewModel()
             {
+                ConnectionString = _configuration.GetValue<string>("ConnectionStrings:BloggingDatabase"),
                 ConnectionPoolCount = poolCount,
                 IsFromConnectionPool = isPool,
             };

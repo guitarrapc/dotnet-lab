@@ -13,13 +13,14 @@ services:
       - front
 
   web_ef:
-    image: aspnetcore_ef
+    image: aspnetcore_mysql_ef
     build:
       context: ./src
       dockerfile: ./WebApplicationEF/Dockerfile
     ports:
       - 80
     environment:
+      ConnectionStrings__BloggingDatabase: "server=mysql_ef;database=mysql_ef;user=root;password=mysql"
       ASPNETCORE_ENVIRONMENT: Production
     networks:
       - front
@@ -33,6 +34,11 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./sql/my.cnf:/etc/mysql/conf.d/my.cnf
+      #- ./.db/data:/var/lib/mysql
     restart: always
     networks:
       - db

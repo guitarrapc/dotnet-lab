@@ -13,13 +13,14 @@ services:
       - front
 
   web_ef:
-    image: aspnetcore_ef
+    image: aspnetcore_mssql_ef
     build:
       context: ./src
       dockerfile: ./WebApplicationEF/Dockerfile
     ports:
       - 80
     environment:
+      ConnectionStrings__BloggingDatabase: "Data Source=mssql_ef;Database=test;User ID=sa;Password=iamSuperUser!!!!12345;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
       ASPNETCORE_ENVIRONMENT: Production
     networks:
       - front

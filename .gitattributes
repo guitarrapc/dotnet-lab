@@ -1,3 +1,7 @@
 * text=auto
 *.cs diff=csharp text
 *.sh text eol=lf
+*.yml text eol=lf
+*.cnf text eol=lf
+*.sql text eol=lf
+*.csv text eol=lf
