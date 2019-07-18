@@ -6,10 +6,17 @@ use migration to create table on database. (Model first)
 
 ```powershell
 dotnet ef migrations add InitialCreate
-dotnet ef database update --configuration appsettings.json
+dotnet ef database update --configuration Debug
 ```
 
-create controller
+your can output sql from migration.
+
+```
+mkdir DatabaseEF
+dotnet ef migrations script --idempotent --output ../DatabaseEF/table.sql
+```
+
+create controller.
 
 ```
 dotnet aspnet-codegenerator controller -name BlogsController -m Blog -dc BloggingContext --relativeFolderPath Controllers --useDefaultLayout
@@ -21,7 +28,7 @@ dotnet aspnet-codegenerator controller -name UsersController -m User -dc Bloggin
 
 use sql to create table on database. (DB first)
 
-* Connect to database and update sql.
+* Connect database and update via sql.
 
 ## Optimization
 

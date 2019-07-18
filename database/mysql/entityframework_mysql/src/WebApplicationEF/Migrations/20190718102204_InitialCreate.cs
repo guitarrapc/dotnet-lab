@@ -21,6 +21,32 @@ namespace WebApplicationEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TestType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Sbyte = table.Column<short>(nullable: false),
+                    Byte = table.Column<byte>(nullable: false),
+                    Short = table.Column<short>(nullable: false),
+                    Ushort = table.Column<int>(nullable: false),
+                    Int = table.Column<int>(nullable: false),
+                    Uint = table.Column<long>(nullable: false),
+                    Long = table.Column<long>(nullable: false),
+                    Ulong = table.Column<long>(type: "BigInt", nullable: false),
+                    Float = table.Column<float>(nullable: false),
+                    Double = table.Column<double>(nullable: false),
+                    Bool = table.Column<short>(nullable: false),
+                    String = table.Column<string>(nullable: true),
+                    Datetime = table.Column<DateTime>(nullable: false),
+                    DatetimeOffset = table.Column<DateTimeOffset>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -65,6 +91,9 @@ namespace WebApplicationEF.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "TestType");
 
             migrationBuilder.DropTable(
                 name: "Users");

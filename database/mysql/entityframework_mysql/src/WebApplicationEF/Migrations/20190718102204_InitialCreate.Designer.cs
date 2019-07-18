@@ -9,7 +9,7 @@ using WebApplicationEF.Data;
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20190718084707_InitialCreate")]
+    [Migration("20190718102204_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,45 @@ namespace WebApplicationEF.Migrations
                     b.HasIndex("BlogId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("WebApplicationEF.Data.TestType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Bool");
+
+                    b.Property<byte>("Byte");
+
+                    b.Property<DateTime>("Datetime");
+
+                    b.Property<DateTimeOffset>("DatetimeOffset");
+
+                    b.Property<double>("Double");
+
+                    b.Property<float>("Float");
+
+                    b.Property<int>("Int");
+
+                    b.Property<long>("Long");
+
+                    b.Property<sbyte>("Sbyte");
+
+                    b.Property<short>("Short");
+
+                    b.Property<string>("String");
+
+                    b.Property<uint>("Uint");
+
+                    b.Property<long>("Ulong")
+                        .HasColumnType("BigInt");
+
+                    b.Property<ushort>("Ushort");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TestType");
                 });
 
             modelBuilder.Entity("WebApplicationEF.Data.User", b =>
