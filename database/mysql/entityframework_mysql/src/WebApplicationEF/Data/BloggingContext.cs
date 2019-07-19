@@ -23,6 +23,8 @@ namespace WebApplicationEF.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // custom type conversion: https://docs.microsoft.com/ja-jp/ef/core/modeling/value-conversions
             // DateTimeOffset(clr) should map to DateTime(mysql).
             // offset is always 0.(UTC)
@@ -36,9 +38,31 @@ namespace WebApplicationEF.Data
                 .Entity<TestType>()
                 .Property(e => e.String3)
                 .HasColumnType("VARCHAR(255)");
-                // do not
-                //.HasColumnType("VARCHAR")
-                //.HasMaxLength(255);
+            // do not
+            //.HasColumnType("VARCHAR")
+            //.HasMaxLength(255);
+
+            // InvalidCastException: Unable to cast object of type 'System.SByte' to type 'System.Int16'.
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Bool)
+                .HasConversion(new BoolToZeroOneConverter<Int16>());
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Bool2)
+                .HasConversion(new BoolToZeroOneConverter<Int16>());
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Sbyte)
+                .HasColumnType("SMALLINT(6)");
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Ushort)
+                .HasColumnType("INT(11)");
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Uint)
+                .HasColumnType("BIGINT(20)");
         }
     }
 

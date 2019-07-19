@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationEF.Data;
 
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20190719055105_typetable_uint6")]
+    partial class typetable_uint6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,9 +108,6 @@ namespace WebApplicationEF.Migrations
 
                     b.Property<long>("Uint")
                         .HasColumnType("BIGINT(20)");
-
-                    b.Property<long>("Ulong")
-                        .HasColumnType("BigInt");
 
                     b.Property<int>("Ushort")
                         .HasColumnType("INT(11)");

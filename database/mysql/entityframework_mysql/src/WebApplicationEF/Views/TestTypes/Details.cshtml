@@ -1,0 +1,132 @@
+﻿@model WebApplicationEF.Data.TestType
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TestType</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Sbyte)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Sbyte)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Byte)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Byte)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ByteArray)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ByteArray)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Short)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Short)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ushort)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ushort)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Int)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Int)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Uint)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Uint)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Long)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Long)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ulong)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ulong)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Float)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Float)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Double)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Double)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Bool)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Bool)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Bool2)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Bool2)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.String)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.String)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.String2)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.String2)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.String3)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.String3)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Datetime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Datetime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DatetimeOffset)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DatetimeOffset)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DatetimeOffset2)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DatetimeOffset2)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

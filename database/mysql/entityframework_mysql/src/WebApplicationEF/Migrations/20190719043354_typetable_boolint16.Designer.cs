@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationEF.Data;
 
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20190719043354_typetable_boolint16")]
+    partial class typetable_boolint16
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +69,7 @@ namespace WebApplicationEF.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<short>("Bool");
+                    b.Property<bool>("Bool");
 
                     b.Property<byte>("Bool2")
                         .HasColumnType("TinyInt(1)");
@@ -91,8 +93,7 @@ namespace WebApplicationEF.Migrations
 
                     b.Property<long>("Long");
 
-                    b.Property<short>("Sbyte")
-                        .HasColumnType("SMALLINT(6)");
+                    b.Property<sbyte>("Sbyte");
 
                     b.Property<short>("Short");
 
@@ -104,14 +105,12 @@ namespace WebApplicationEF.Migrations
                     b.Property<string>("String3")
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<long>("Uint")
-                        .HasColumnType("BIGINT(20)");
+                    b.Property<uint>("Uint");
 
                     b.Property<long>("Ulong")
                         .HasColumnType("BigInt");
 
-                    b.Property<int>("Ushort")
-                        .HasColumnType("INT(11)");
+                    b.Property<ushort>("Ushort");
 
                     b.HasKey("Id");
 

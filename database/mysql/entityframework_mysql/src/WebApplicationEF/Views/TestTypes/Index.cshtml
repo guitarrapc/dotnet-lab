@@ -1,0 +1,143 @@
+﻿@model IEnumerable<WebApplicationEF.Data.TestType>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Sbyte)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Byte)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ByteArray)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Short)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ushort)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Int)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Uint)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Long)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ulong)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Float)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Double)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bool)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bool2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.String)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.String2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.String3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Datetime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatetimeOffset)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatetimeOffset2)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sbyte)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Byte)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ByteArray)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Short)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ushort)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Int)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Uint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Long)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ulong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Float)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Double)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bool)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bool2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.String)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.String2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.String3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Datetime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatetimeOffset)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatetimeOffset2)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
