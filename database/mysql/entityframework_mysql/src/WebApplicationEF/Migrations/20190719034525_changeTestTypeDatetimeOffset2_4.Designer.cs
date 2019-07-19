@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationEF.Data;
 
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20190719034525_changeTestTypeDatetimeOffset2_4")]
+    partial class changeTestTypeDatetimeOffset2_4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +75,7 @@ namespace WebApplicationEF.Migrations
                     b.Property<byte>("Byte");
 
                     b.Property<byte[]>("ByteArray")
-                        .HasMaxLength(3000);
+                        .HasMaxLength(5000);
 
                     b.Property<DateTime>("Datetime");
 
@@ -96,9 +98,6 @@ namespace WebApplicationEF.Migrations
                     b.Property<string>("String");
 
                     b.Property<string>("String2")
-                        .HasColumnType("VARCHAR(255)");
-
-                    b.Property<string>("String3")
                         .HasColumnType("VARCHAR(255)");
 
                     b.Property<uint>("Uint");

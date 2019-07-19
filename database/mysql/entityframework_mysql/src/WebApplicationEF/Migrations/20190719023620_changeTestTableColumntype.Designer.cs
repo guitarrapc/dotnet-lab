@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationEF.Data;
 
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20190719023620_changeTestTableColumntype")]
+    partial class changeTestTableColumntype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,19 +69,13 @@ namespace WebApplicationEF.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<byte>("Bool")
-                        .HasColumnType("TinyInt(1)");
+                    b.Property<bool>("Bool");
 
                     b.Property<byte>("Byte");
-
-                    b.Property<byte[]>("ByteArray")
-                        .HasMaxLength(3000);
 
                     b.Property<DateTime>("Datetime");
 
                     b.Property<DateTimeOffset>("DatetimeOffset");
-
-                    b.Property<DateTime>("DatetimeOffset2");
 
                     b.Property<double>("Double");
 
@@ -94,12 +90,6 @@ namespace WebApplicationEF.Migrations
                     b.Property<short>("Short");
 
                     b.Property<string>("String");
-
-                    b.Property<string>("String2")
-                        .HasColumnType("VARCHAR(255)");
-
-                    b.Property<string>("String3")
-                        .HasColumnType("VARCHAR(255)");
 
                     b.Property<uint>("Uint");
 

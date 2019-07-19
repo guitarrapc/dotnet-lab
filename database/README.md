@@ -146,3 +146,151 @@ b.Property<string>("Alias");
 
 手元のマージをロールバックしてマージ前の状態に戻し、自分のモデルはそのままにマイグレーションだけ消し、チームの変更をマージしてから、自分の環境でマイグレーションを生成します。
 
+## MySQL 特有の注意
+
+* clr と mysql の型マッピング
+
+次のエンティティを考えます。
+
+```csharp
+    public class TestType
+    {
+        [Key]
+        public int Id { get; set; }
+        public sbyte Sbyte { get; set; }
+        public byte Byte { get; set; }
+        public short Short { get; set; }
+        public ushort Ushort { get; set; }
+        public int Int { get; set; }
+        public uint Uint { get; set; }
+        public long Long { get; set; }
+        public ulong Ulong { get; set; }
+        public float Float { get; set; }
+        public double Double { get; set; }
+        public bool Bool { get; set; }
+        public string String { get; set; }
+        public DateTime Datetime { get; set; }
+        public DateTimeOffset DatetimeOffset { get; set; }
+    }
+```
+
+これを entity framework で migration すると、MySQL で次の型で扱われます。
+
+```sql
+CREATE TABLE `TestType` (
+	`Id` INT(11) NOT NULL AUTO_INCREMENT,
+	`Sbyte` SMALLINT(6) NOT NULL,
+	`Byte` TINYINT(4) NOT NULL,
+	`Short` SMALLINT(6) NOT NULL,
+	`Ushort` INT(11) NOT NULL,
+	`Int` INT(11) NOT NULL,
+	`Uint` BIGINT(20) NOT NULL,
+	`Long` BIGINT(20) NOT NULL,
+	`Float` FLOAT NOT NULL,
+	`Double` DOUBLE NOT NULL,
+	`Bool` BIT(1) NOT NULL,
+	`String` TEXT NULL,
+	`Datetime` DATETIME NOT NULL,
+	`DatetimeOffset` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`Id`)
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+```
+
+* TypeConversion のずれ
+
+以下の Entity Framework の型変換が注意を要します。
+
+clr | MySQL | 型変換指定
+---- | ---- | ----
+string | text | data annotation OR fluentAPI
+DatetimeOffset | TimeStamp | TypeConversion
+bool | tinyint(4) | data annotation OR fluentAPI
+unsigned | signed にマップ | Entity Framework としてサポートしていない....
+
+型変換を明示的に行うには、data annotation OR fluentAPI と TypeConversion の2方法があります。
+
+> https://docs.microsoft.com/ja-jp/ef/core/modeling/max-length
+
+data annotationは、プロパティにAttributeでアノテーションを指示するものです。
+
+```csharp
+[Column(TypeName = "VARCHAR(255)")]
+public string String2 { get; set; }
+```
+
+fluentAPI は、DbContext の `OnModelCreating` を override して指示をします。
+
+```csharp
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<TypeTable>()
+        .Property(e => e.String2)
+        .HasColumnType("VARCHAR(255)");
+}
+```
+
+unsigned は、ADO.NET の SQL Server でサポートされていないために、Entity Framework のアノテーションにはありません。
+コードファーストで生成したテーブルのカラムでも指定できません....
+
+DB上は long にいれておいて、byte にいれてから ulong にキャストする方法がありますが.....
+
+> [mysql \- How to use unsigned int / long types with Entity Framework? \- Stack Overflow](https://stackoverflow.com/questions/26303631/how-to-use-unsigned-int-long-types-with-entity-framework/26436056)
+
+
+* クエリが SQL Server 向けにはかれる
+
+例えば、Entity に typename ではなく、MaxLength Attirbute で長さを指定するとこの問題に遭遇する。
+
+```csharp
+[Column(TypeName = "VARCHAR")]
+[MaxLength(500)]
+public string String2 {get; set;}
+```
+
+このMigrationを実行すると、mysql を providerに指定していても、Alter table が sql server 向けのSQLが実行されて実行時エラーになる。
+
+```sql
+ALTER TABLE TestType MODIFY `String2` VARCHAR NOT NULL;
+```
+
+mysql ならこの構文になる
+
+```sql
+ALTER TABLE `TestType` CHANGE COLUMN `String2` `String2` VARCHAR(50) NULL AFTER `DatetimeOffset`;
+```
+
+回避するには、Entity での指定を、`[Column(TypeName = "VARCHAR(50)")]` にする。
+これなら生成されるクエリはMySQL を対象になっており、`[Column(TypeName = "VARCHAR(255)")]`にしても適用できる。
+
+なお、この問題はVARCHAR での指定では発生するが、byte[] と VARBINARY間では発生しない。
+
+```csharp
+// 問題ない
+[MaxLength(3000)]
+public byte[] ByteArray { get; set; }
+```
+
+fluentAPI であってもこれは同様にStringの場合、HasMaxLength で縛るとエラーが生じます。
+
+```csharp
+// do
+modelBuilder
+    .Entity<TestType>()
+    .Property(e => e.String3)
+    .HasColumnType("VARCHAR(255)");
+
+// do not
+modelBuilder
+    .Entity<TestType>()
+    .Property(e => e.String3)
+    .HasColumnType("VARCHAR")
+    .HasMaxLength(255);
+
+// error
+// Failed executing DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+// ALTER TABLE `TestType` ADD `String3` VARCHAR NULL;
+// You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NULL' at line 1
+```
