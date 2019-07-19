@@ -66,7 +66,7 @@ dotnet ef dbcontext info
 
 * migrationを強制的にスキップしたい
 
-[TODO]
+ないです。
 
 ## 注意しないといけない点
 
@@ -104,4 +104,45 @@ Windows で MySQL Workbench や HeidiSQL をインストールときは scoop �
 scoop install mysql-workbench
 scoop install heidisql
 ```
+
+* Migration snapshot がほかのCommitとconflict する
+
+> ref: https://docs.microsoft.com/ja-jp/ef/core/managing-schemas/migrations/teams
+
+snapshot は、現在のスキーマ定義を示すため、次のパターンが考えられます。
+
+> 新しいプロパティの追加: 新しいプロパティは異なるエンティティであるためgit の自動マージで解消されるはずです。
+
+例えば、チームで新しいプロパティを追加したpush をしていてpullしたとします。
+
+次のようなDiffが出ますが、これは両方とも共存できるエンティティであるはずなので自動的に解消されます。
+
+```
+<<<<<<< Mine
+b.Property<bool>("Deactivated");
+=======
+b.Property<int>("LoyaltyPoints");
+>>>>>>> Theirs
+```
+
+```
+b.Property<bool>("Deactivated");
+b.Property<int>("LoyaltyPoints");
+```
+
+> 既存のプロパティを変更した: チームが自分の環境のプロパティをリネームした場合
+
+このとき、自分のモデルのスナップショットとチームのスナップショットで競合が起きます。
+
+```
+<<<<<<< Mine
+b.Property<string>("Username");
+=======
+b.Property<string>("Alias");
+>>>>>>> Theirs
+```
+
+この場合、次のステップでマージ解消を目指します。
+
+手元のマージをロールバックしてマージ前の状態に戻し、自分のモデルはそのままにマイグレーションだけ消し、チームの変更をマージしてから、自分の環境でマイグレーションを生成します。
 
