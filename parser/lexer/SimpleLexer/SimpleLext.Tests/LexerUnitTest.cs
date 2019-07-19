@@ -4,14 +4,14 @@ using Xunit;
 
 namespace SimpleLext.Tests
 {
-    public class Data
+    public class LexerUnitTest
     {
-        public string Input { get; set; }
-        public Token[] Expected { get; set; }
-    }
+        public class Data
+        {
+            public string Input { get; set; }
+            public Token[] Expected { get; set; }
+        }
 
-    public class UnitTest1
-    {
         public static IEnumerable<object[]> GetTokens()
         {
             yield return new []

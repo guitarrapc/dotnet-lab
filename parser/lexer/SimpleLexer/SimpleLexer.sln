@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleLexer", "SimpleLexer\SimpleLexer.csproj", "{135D7F19-B506-4ACE-B2F5-94FE66768776}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLext.Tests", "SimpleLext.Tests\SimpleLext.Tests.csproj", "{E3517F6F-59E8-4C72-8389-2405D10B97B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLexr.Tests", "SimpleLext.Tests\SimpleLexr.Tests.csproj", "{E3517F6F-59E8-4C72-8389-2405D10B97B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

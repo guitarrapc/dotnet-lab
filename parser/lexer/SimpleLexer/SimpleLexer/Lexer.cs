@@ -8,9 +8,25 @@ namespace SimpleLexer
     {
         public string Kind { get; set; }
         public string Value { get; set; }
+        public Token Left { get; set; }
+        public Token Right { get; set; }
 
         public override string ToString()
             => $"{Kind}, {Value}";
+
+        public string ToParenthesis()
+        {
+            if (Left == null && Right == null) return Value;
+            var builder = new StringBuilder();
+            builder.Append("(");
+            if (Left != null)
+                builder.Append(Left.ToParenthesis()).Append(" ");
+            builder.Append(Value);
+            if (Right != null)
+                builder.Append(" ").Append(Right.ToParenthesis());
+            builder.Append(")");
+            return builder.ToString();
+        }
     }
 
     /// <summary>
