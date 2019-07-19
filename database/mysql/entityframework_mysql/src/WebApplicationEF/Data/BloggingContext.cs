@@ -86,8 +86,9 @@ namespace WebApplicationEF.Data
         public ulong Ulong { get; set; }
         public float Float { get; set; }
         public double Double { get; set; }
-        [Column(TypeName = "TinyInt(1)")]
         public bool Bool { get; set; }
+        [Column(TypeName = "TinyInt(1)")]
+        public bool Bool2 { get; set; }
         public string String { get; set; }
         [Column(TypeName = "VARCHAR(255)")]
         public string String2 { get; set; }
