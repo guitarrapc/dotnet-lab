@@ -26,7 +26,7 @@ namespace SimpleLext.Tests
                         {
                             Kind = "sign",
                             Value = "=",
-                            Left = new Token(){ Kind = "variable", Value = "ans1"},
+                            Left = new Token(){ Kind = "ident", Value = "ans1"},
                             Right = new Token()
                             {
                                 Kind = "sign",
@@ -100,7 +100,7 @@ namespace SimpleLext.Tests
                         {
                             Kind = "sign",
                             Value = "=",
-                            Left = new Token(){Kind = "variable",Value = "a"},
+                            Left = new Token(){Kind = "ident",Value = "a"},
                             Right = new Token()
                             {
                                 Kind = "sign",
@@ -123,8 +123,8 @@ namespace SimpleLext.Tests
         [Theory, MemberData(nameof(GetTokens))]
         public void TokenizeTest(Data data)
         {
-            var lexeredTokens = new Lexer(data.Input).Tokenize();
-            var parsedTokens = new Parser(lexeredTokens).Block();
+            var lexeredTokens = new Lexer().Set(data.Input).Tokenize();
+            var parsedTokens = new Parser().Set(lexeredTokens).Block();
             var i = 0;
             foreach (var token in parsedTokens)
             {

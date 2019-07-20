@@ -45,10 +45,11 @@ namespace SimpleLexer
         private string text;
         private int index;
 
-        public Lexer(string text)
+        public Lexer Set(string text)
         {
             this.text = text;
             this.index = 0;
+            return this;
         }
 
         // tokenize
@@ -69,7 +70,8 @@ namespace SimpleLexer
             if (IsEndOfToken()) return null;
             if (IsSigneStart(Current())) return Sign();
             if (IsDigitStart(Current())) return Digit();
-            if (IsVariableStart(Current())) return Variable();
+            if (IsIdentStart(Current())) return Ident();
+            if (IsParenthisStart(Current())) return Parenthesis();
             throw new ArgumentOutOfRangeException("Not a character for tokens");
         }
 
@@ -129,11 +131,11 @@ namespace SimpleLexer
             return token;
         }
 
-        private bool IsVariableStart(char c)
+        private bool IsIdentStart(char c)
         {
             return char.IsLetter(c);
         }
-        private Token Variable()
+        private Token Ident()
         {
             var builder = new StringBuilder();
             builder.Append(Next());
@@ -143,8 +145,22 @@ namespace SimpleLexer
             }
             var token = new Token()
             {
-                Kind = "variable",
+                Kind = "ident",
                 Value = builder.ToString(),
+            };
+            return token;
+        }
+
+        private bool IsParenthisStart(char c)
+        {
+            return c == '(' || c == ')';
+        }
+        private Token Parenthesis()
+        {
+            var token = new Token()
+            {
+                Kind = "parenthesis",
+                Value = Next().ToString(),
             };
             return token;
         }

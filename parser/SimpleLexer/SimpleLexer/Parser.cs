@@ -17,13 +17,14 @@ namespace SimpleLexer
             Value = "(__eot__)"
         };
 
-        private readonly List<Token> tokens;
+        private List<Token> tokens;
         private int index;
 
-        public Parser(List<Token> tokens)
+        public Parser()
         {
             degrees = new Dictionary<string, int>()
             {
+              {"(", 80},
               {"*", 60},
               {"/", 60},
               {"+", 50},
@@ -31,14 +32,18 @@ namespace SimpleLexer
               {"=", 10},
             };
 
-            factorKinds = new List<string>() { "digit", "variable" };
+            factorKinds = new List<string>() { "digit", "ident" };
             binaryKinds = new List<string>() { "sign" };
             rightAssociates = new List<string>() { "=" };
+        }
 
+        public Parser Set(List<Token> tokens)
+        {
             index = 0;
             this.tokens = tokens;
             // add last letter symbol token
             this.tokens.Add(endOfToken);
+            return this;
         }
 
         private Token Current()
@@ -86,17 +91,26 @@ namespace SimpleLexer
         /// <returns></returns>
         private Token Bind(Token left, Token op)
         {
-            if (!binaryKinds.Contains(op.Kind))
-                throw new Exception("The token cannot place here.");
-            op.Left = left;
-            var leftDegree = Degree(op);
-            if (rightAssociates.Contains(op.Value))
+            if (binaryKinds.Contains(op.Kind))
             {
-                // minus degree of left op
-                leftDegree -= 1;
+                op.Left = left;
+                var leftDegree = Degree(op);
+                if (rightAssociates.Contains(op.Value))
+                {
+                    // minus degree of left op
+                    leftDegree -= 1;
+                }
+                op.Right = Express(leftDegree);
+                return op;
             }
-            op.Right = Express(leftDegree);
-            return op;
+            else if (op.Kind.Equals("parenthesis") && op.Value.Equals("("))
+            {
+                op.Left = left;
+                op.Right = Express(0);
+                Consume(")");
+                return op;
+            }
+            throw new Exception("The token cannot place here.");
         }
         /// <summary>
         /// Relate each Token via op degree
@@ -114,6 +128,12 @@ namespace SimpleLexer
                 rightDegree = Degree(Current());
             }
             return left;
+        }
+        private Token Consume(string expectedValue)
+        {
+            if (expectedValue.Equals(Current().Value))
+                return Next();
+            throw new Exception("Not expected value");
         }
 
         /// <summary>
