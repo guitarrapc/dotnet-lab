@@ -58,6 +58,12 @@ namespace SimpleLexer
             ++index;
             return token;
         }
+        private Token Consume(string expectedValue)
+        {
+            if (expectedValue.Equals(Current().Value))
+                return Next();
+            throw new Exception("Not expected value");
+        }
         /// <summary>
         /// determine is token can place left or right edge of expression.
         /// </summary>
@@ -128,12 +134,6 @@ namespace SimpleLexer
                 rightDegree = Degree(Current());
             }
             return left;
-        }
-        private Token Consume(string expectedValue)
-        {
-            if (expectedValue.Equals(Current().Value))
-                return Next();
-            throw new Exception("Not expected value");
         }
 
         /// <summary>
