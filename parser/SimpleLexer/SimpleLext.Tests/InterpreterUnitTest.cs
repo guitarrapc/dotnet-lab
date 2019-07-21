@@ -38,6 +38,14 @@ namespace SimpleLext.Tests
                     Expected = ("a", 23),
                 },
             };
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = " a = (3 + 4) * 5 println(a)",
+                    Expected = ("a", 35),
+                },
+            };
         }
 
         [Theory, MemberData(nameof(GetTokens))]

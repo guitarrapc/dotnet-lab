@@ -64,6 +64,28 @@ namespace SimpleLext.Tests
                     },
                 },
             };
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = " a = (3 + 4) * 5 println(a)",
+                    Expected = new[] {
+                        new Token(){ Kind = "ident", Value = "a"},
+                        new Token(){ Kind = "sign", Value = "="},
+                        new Token(){ Kind = "parenthesis", Value = "("},
+                        new Token(){ Kind = "digit", Value = "3"},
+                        new Token(){ Kind = "sign", Value = "+"},
+                        new Token(){ Kind = "digit", Value = "4"},
+                        new Token(){ Kind = "parenthesis", Value = ")"},
+                        new Token(){ Kind = "sign", Value = "*"},
+                        new Token(){ Kind = "digit", Value = "5"},
+                        new Token(){ Kind = "ident", Value = "println"},
+                        new Token(){ Kind = "parenthesis", Value = "("},
+                        new Token(){ Kind = "ident", Value = "a"},
+                        new Token(){ Kind = "parenthesis", Value = ")"},
+                    },
+                },
+            };
         }
 
         [Theory, MemberData(nameof(GetTokens))]

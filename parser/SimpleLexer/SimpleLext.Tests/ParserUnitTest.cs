@@ -118,6 +118,35 @@ namespace SimpleLext.Tests
                     },
                 },
             };
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "a = (3 + 4) * 5",
+                    Parenthis = "(a = ((3 + 4) * 5))",
+                    Expected = new[] {
+                        new Token()
+                        {
+                            Kind = "sign",
+                            Value = "=",
+                            Left = new Token(){Kind = "ident",Value = "a"},
+                            Right = new Token()
+                            {
+                                Kind = "sign",
+                                Value = "*",
+                                Left = new Token()
+                                {
+                                    Kind = "sign",
+                                    Value = "+",
+                                    Left = new Token(){Kind = "digit",Value = "3"},
+                                    Right = new Token(){Kind = "digit",Value = "4"},
+                                },
+                                Right = new Token(){Kind = "digit",Value = "5"},
+                            },
+                        },
+                    },
+                },
+            };
         }
 
         [Theory, MemberData(nameof(GetTokens))]

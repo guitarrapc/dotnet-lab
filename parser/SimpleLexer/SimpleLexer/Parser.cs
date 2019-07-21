@@ -71,9 +71,17 @@ namespace SimpleLexer
         /// <returns></returns>
         private Token Lead(Token token)
         {
-            if (!factorKinds.Contains(token.Kind))
-                throw new Exception("the token cannot place here.");
-            return token;
+            if (factorKinds.Contains(token.Kind))
+            {
+                return token;
+            }
+            if (token.Kind.Equals("parenthesis") && token.Value.Equals("("))
+            {
+                var expr = Express(0);
+                Consume(")");
+                return expr;
+            }
+            throw new Exception("the token cannot place here.");
         }
         /// <summary>
         /// asop token priority via op degree
