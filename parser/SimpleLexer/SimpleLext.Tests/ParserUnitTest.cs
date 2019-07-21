@@ -391,6 +391,103 @@ namespace SimpleLext.Tests
                 },
             };
         }
+        public static IEnumerable<object[]> ReturnTokens()
+        {
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "function add3(a1, a2, a3) {"
+                        + "  return a1 + a2 + a3"
+                        + "}"
+                        + "v = add3(1, 2, 3)"
+                        + "println(v)",
+                    Parenthis = new []
+                    {
+                        "(function add3(a1, a2, a3){ return((a1 + a2) + a3)})",
+                        "(v = (add3 (1, 2, 3)))",
+                        "(println (v))",
+                    },
+                    Expected = new[] {
+                        new Token()
+                        {
+                            Kind = "function",
+                            Value = "function",
+                            Ident = new Token() { Kind = "ident", Value = "add3"},
+                            Params = new List<Token>
+                            {
+                                new Token() { Kind = "ident", Value = "a1"},
+                                new Token() { Kind = "ident", Value = "a2"},
+                                new Token() { Kind = "ident", Value = "a3"},
+                            },
+                            Block = new List<Token>{new Token()
+                            {
+                                Kind = "return",
+                                Value = "return",
+                                Left = new Token
+                                {
+                                    Kind = "sign",
+                                    Value = "+",
+                                    Left = new Token
+                                    {
+                                        Kind = "sign",
+                                        Value = "+",
+                                        Left = new Token
+                                        {
+                                            Kind = "sign",
+                                            Value = "+",
+                                            Left = new Token{ Kind = "ident", Value = "a1"},
+                                            Right = new Token{ Kind = "ident", Value = "a2"},
+                                        },
+                                        Right = new Token{Kind = "ident",Value = "a3",},
+                                    }
+                                },
+                            }},
+                        },
+                        new Token()
+                        {
+                            Kind = "sign",
+                            Value = "=",
+                            Left = new Token
+                            {
+                                Kind = "ident",
+                                Value = "v"
+                            },
+                            Right = new Token
+                            {
+                                Kind = "parenthesis",
+                                Value = "(",
+                                Left= new Token
+                                {
+                                    Kind = "ident",
+                                    Value = "add3"
+                                },
+                                Params = new List<Token>
+                                {
+                                    new Token{Kind = "digit",Value = "1",},
+                                    new Token{Kind = "digit",Value = "2",},
+                                    new Token{Kind = "digit",Value = "3",},
+                                },
+                            }
+                        },
+                        new Token
+                        {
+                            Kind = "parenthesis",
+                            Value = "(",
+                            Left= new Token
+                            {
+                                Kind = "ident",
+                                Value = "println"
+                            },
+                            Params = new List<Token>
+                            {
+                                new Token{Kind = "ident",Value = "v",},
+                            },
+                        },
+                    },
+                },
+            };
+        }
 
         [Theory, MemberData(nameof(SimpleTokens))]
         public void SimpleTokenizeTest(Data data)
@@ -415,6 +512,9 @@ namespace SimpleLext.Tests
             => TestCore(data);
         [Theory, MemberData(nameof(FunctionMultiParamsTokens))]
         public void FunctionMultiParamsTokensTest(Data data)
+            => TestCore(data);
+        [Theory, MemberData(nameof(ReturnTokens))]
+        public void ReturnTokensTest(Data data)
             => TestCore(data);
 
         private void TestCore(Data data)

@@ -39,7 +39,7 @@ namespace SimpleLexer
             binaryKinds = new List<string>() { "sign" };
             rightAssociates = new List<string>() { "=" };
             unaryOperators = new List<string>() { "+", "-" };
-            reserved = new List<string>() { "function" };
+            reserved = new List<string>() { "function", "return" };
         }
 
         public Parser Set(List<Token> tokens)
@@ -79,6 +79,16 @@ namespace SimpleLexer
             if (token.Kind.Equals("ident") && token.Value.Equals("function"))
             {
                 return Function(token);
+            }
+            if (token.Kind.Equals("ident") && token.Value.Equals("return"))
+            {
+                // override
+                token.Kind = "return";
+                if (!Current().Kind.Equals("endofblock"))
+                {
+                    token.Left = Express(0);
+                }
+                return token;
             }
             if (factorKinds.Contains(token.Kind))
             {

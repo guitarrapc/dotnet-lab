@@ -23,15 +23,30 @@ namespace SimpleLexer
 
         public Dictionary<string, Variable> Execute()
         {
-            Body(body);
+            Body(body, null);
             return variables;
         }
-        private void Body(List<Token> body)
+        private object Body(List<Token> body, bool[] ret)
         {
             foreach (var expr in body)
             {
-                Express(expr);
+                if (expr.Kind.Equals("return"))
+                {
+                    if (ret == null)
+                        throw new ArgumentException("cannot return");
+                    ret[0] = true;
+                    if (expr.Left == null)
+                    {
+                        return null;
+                    }
+                    return Express(expr.Left);
+                }
+                else
+                {
+                    Express(expr);
+                }
             }
+            return null;
         }
         private object Express(Token expr)
         {
@@ -102,7 +117,7 @@ namespace SimpleLexer
                 return i;
             if (value is Variable v)
                 return v.Value;
-            throw new Exception("Right value error");
+            throw new Exception($"Right value error, {value}");
         }
         private object Invoke(Token expr)
         {
@@ -229,8 +244,8 @@ namespace SimpleLexer
                         variable.Value = 0;
                     }
                 }
-                Context.Body(Block);
-                return null;
+                var ret = new[] { false };
+                return Context.Body(Block, ret);
             }
         }
     }
