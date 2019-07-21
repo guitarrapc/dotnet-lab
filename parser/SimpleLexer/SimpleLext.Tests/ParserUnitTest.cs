@@ -203,6 +203,96 @@ namespace SimpleLext.Tests
                 },
             };
         }
+        public static IEnumerable<object[]> FunctionTokens()
+        {
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "v = 0"
+                        + "function add(num) {"
+                        + "  v = v + num"
+                        + "}"
+                        + "add(3)"
+                        + "println(v)",
+                    Parenthis = "(v = 0)"
+                        + "function"
+                        + "(add (3)"
+                        + "(println (v)",
+                    Expected = new[] {
+                        new Token()
+                        {
+                            Kind = "sign",
+                            Value = "=",
+                            Left = new Token(){Kind = "ident",Value = "v"},
+                            Right = new Token(){Kind = "digit",Value = "0"},
+                        },
+                        new Token()
+                        {
+                            Kind = "function",
+                            Value = "function",
+                            Ident = new Token() { Kind = "ident", Value = "add"},
+                            Param = new Token() { Kind = "ident", Value = "num"},
+                            Block = new List<Token>{new Token()
+                            {
+                                Kind = "sign",
+                                Value = "=",
+                                Left = new Token
+                                {
+                                    Kind = "ident",
+                                    Value = "v"
+                                },
+                                Right = new Token
+                                {
+                                    Kind = "sign",
+                                    Value = "+",
+                                    Left = new Token
+                                    {
+                                        Kind = "ident",
+                                        Value = "v"
+                                    },
+                                    Right = new Token
+                                    {
+                                        Kind = "ident",
+                                        Value = "num",
+                                    },
+                                }
+                            }},
+                        },
+                        new Token()
+                        {
+                            Kind = "parenthesis",
+                            Value = "(",
+                            Left= new Token
+                            {
+                                Kind = "ident",
+                                Value = "add"
+                            },
+                            Right = new Token
+                            {
+                                Kind = "digit",
+                                Value = "3",
+                            },
+                        },
+                        new Token
+                        {
+                            Kind = "parenthesis",
+                            Value = "(",
+                            Left= new Token
+                            {
+                                Kind = "ident",
+                                Value = "println"
+                            },
+                            Right = new Token
+                            {
+                                Kind = "ident",
+                                Value = "v",
+                            },
+                        },
+                    },
+                },
+            };
+        }
 
         [Theory, MemberData(nameof(SimpleTokens))]
         public void SimpleTokenizeTest(Data data)
@@ -221,6 +311,9 @@ namespace SimpleLext.Tests
             => TestCore(data);
         [Theory, MemberData(nameof(UnaryOperatorTokens))]
         public void UnaryOperatorTokenizeTest(Data data)
+            => TestCore(data);
+        [Theory, MemberData(nameof(FunctionTokens))]
+        public void FunctionTokenizeTest(Data data)
             => TestCore(data);
 
         private void TestCore(Data data)

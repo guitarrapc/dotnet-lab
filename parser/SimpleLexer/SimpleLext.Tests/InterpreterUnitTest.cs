@@ -87,6 +87,26 @@ namespace SimpleLext.Tests
                 },
             };
         }
+        public static IEnumerable<object[]> FunctionTokens()
+        {
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "v = 0"
+                        + "function add(num) {"
+                        + "  v = v + num"
+                        + "}"
+                        + "add(3)"
+                        + "println(v)",
+                    Expected = new []
+                    {
+                        ("v", new Interpreter.Variable { Name = "v", Value = 3 }),
+                        ("num", new Interpreter.Variable { Name = "num", Value = 3 }),
+                    },
+                },
+            };
+        }
 
         [Theory, MemberData(nameof(SimpleTokens))]
         public void SimpleTokenizeTest(Data data)
@@ -105,6 +125,9 @@ namespace SimpleLext.Tests
             => TestCore(data);
         [Theory, MemberData(nameof(UnaryOperatorTokens))]
         public void UnaryOperatorTokenizeTest(Data data)
+            => TestCore(data);
+        [Theory, MemberData(nameof(FunctionTokens))]
+        public void FunctionTokenizeTest(Data data)
             => TestCore(data);
 
         public void TestCore(Data data)
