@@ -11,11 +11,12 @@ namespace SimpleLexer
         private readonly List<string> binaryKinds;
         private readonly List<string> rightAssociates;
         private readonly List<string> unaryOperators;
+        private readonly List<string> reserved;
 
         private readonly Token endOfToken = new Token()
         {
-            Kind = "eot",
-            Value = "(__eot__)"
+            Kind = "endofblock",
+            Value = "(__endofblock__)"
         };
 
         private List<Token> tokens;
@@ -38,6 +39,7 @@ namespace SimpleLexer
             binaryKinds = new List<string>() { "sign" };
             rightAssociates = new List<string>() { "=" };
             unaryOperators = new List<string>() { "+", "-" };
+            reserved = new List<string>() { "function" };
         }
 
         public Parser Set(List<Token> tokens)
@@ -74,6 +76,10 @@ namespace SimpleLexer
         /// <returns></returns>
         private Token Lead(Token token)
         {
+            if (token.Kind.Equals("ident") && token.Value.Equals("function"))
+            {
+                return Function(token);
+            }
             if (factorKinds.Contains(token.Kind))
             {
                 return token;
@@ -91,10 +97,32 @@ namespace SimpleLexer
                 Consume(")");
                 return expr;
             }
-            throw new Exception("the token cannot place here.");
+            throw new Exception($"the token cannot place here. {token.Kind}: {token.Value}");
+        }
+        private Token Function(Token token)
+        {
+            // function name(param){}
+            token.Kind = "function";
+            token.Ident = Ident();
+            Consume("(");
+            token.Param = Ident();
+            Consume(")");
+            Consume("{");
+            token.Block = Block();
+            Consume("}");
+            return token;
+        }
+        private Token Ident()
+        {
+            var id = Next();
+            if (!id.Kind.Equals("ident"))
+                throw new Exception($"not a identical token, {id.Kind}");
+            if (reserved.Contains(id.Value))
+                throw new ArgumentOutOfRangeException($"The token was reserved. {id.Value}");
+            return id;
         }
         /// <summary>
-        /// asop token priority via op degree
+        /// token priority via op degree
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -105,7 +133,7 @@ namespace SimpleLexer
             return 0;
         }
         /// <summary>
-        /// Asop Tokens comes to left/right of op token
+        /// Tokens comes to left/right of op token
         /// </summary>
         /// <remarks>
         /// in case of 4 + 3, this method will asop 4 for left, and 3 for right.
@@ -161,7 +189,7 @@ namespace SimpleLexer
         public List<Token> Block()
         {
             var block = new List<Token>();
-            while (!Current().Kind.Equals("eot"))
+            while (!Current().Kind.Equals("endofblock"))
             {
                 block.Add(Express(0));
             }

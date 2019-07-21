@@ -11,6 +11,10 @@ namespace SimpleLexer
         public Token Left { get; set; }
         public Token Right { get; set; }
 
+        public Token Ident { get; set; }
+        public Token Param { get; set; }
+        public List<Token> Block { get; set; }
+
         public override string ToString()
             => $"{Kind}, {Value}";
 
@@ -72,6 +76,7 @@ namespace SimpleLexer
             if (IsDigitStart(Current())) return Digit();
             if (IsIdentStart(Current())) return Ident();
             if (IsParenthisStart(Current())) return Parenthesis();
+            if (IsCurlyBracketStart(Current())) return CurlyBracket();
             throw new ArgumentOutOfRangeException("Not a character for tokens");
         }
 
@@ -162,6 +167,25 @@ namespace SimpleLexer
                 Kind = "parenthesis",
                 Value = Next().ToString(),
             };
+            return token;
+        }
+
+        private bool IsCurlyBracketStart(char c)
+        {
+            return c == '{' || c == '}';
+        }
+        private Token CurlyBracket()
+        {
+            var token = new Token();
+            if (Current() == '{')
+            {
+                token.Kind = "curlybracket";
+            }
+            else
+            {
+                token.Kind = "endofblock";
+            }
+            token.Value = Next().ToString();
             return token;
         }
     }

@@ -7,7 +7,7 @@ namespace SimpleLexer
     public class Interpreter
     {
         public Dictionary<string, FunctionBase> functions { get; set; }
-        public Dictionary<string, int> variables { get; set; }
+        public Dictionary<string, Variable> variables { get; set; }
         private List<Token> body;
 
         public Interpreter Set(List<Token> body)
@@ -15,12 +15,12 @@ namespace SimpleLexer
             functions = new Dictionary<string, FunctionBase>();
             FunctionBase f = new Println();
             functions.Add(f.Name, f);
-            variables = new Dictionary<string, int>();
+            variables = new Dictionary<string, Variable>();
             this.body = body;
             return this;
         }
 
-        public Dictionary<string, int> Execute()
+        public Dictionary<string, Variable> Execute()
         {
             Body(body);
             return variables;
@@ -40,6 +40,8 @@ namespace SimpleLexer
                     return Digit(expr);
                 case "ident":
                     return Ident(expr);
+                case "function":
+                    return Function(expr);
                 case "parenthesis":
                     return Invoke(expr);
                 case "sign" when expr.Value.Equals("="):
@@ -73,7 +75,7 @@ namespace SimpleLexer
                 Name = name,
                 Value = 0,
             };
-            variables[name] = 0;
+            variables[name] = v;
             return v;
         }
         // assign to variable
@@ -82,7 +84,7 @@ namespace SimpleLexer
             var variable = GetVariable(Express(expr.Left));
             var value = GetValue(Express(expr.Right));
             variable.Value = value;
-            variables[variable.Name] = variable.Value;
+            variables[variable.Name] = variable;
             return variable;
         }
         // get variable
@@ -90,7 +92,7 @@ namespace SimpleLexer
         {
             if (value is Variable v)
                 return v;
-            throw new Exception("Left value error");
+            throw new Exception($"Left value error. {value}");
         }
         // get value
         private int GetValue(object value)
@@ -112,6 +114,23 @@ namespace SimpleLexer
             if (value is FunctionBase f)
                 return f;
             throw new Exception("not a function");
+        }
+        private object Function(Token token)
+        {
+            var name = token.Ident.Value;
+            if (functions.ContainsKey(name))
+                throw new ArgumentException("Name was used");
+            if (variables.ContainsKey(name))
+                throw new ArgumentException("Name was used");
+            var func = new DynamicFunction()
+            {
+                Context = this,
+                Name = name,
+                Param = token.Param,
+                Block = token.Block,
+            };
+            functions[name] = func;
+            return null;
         }
 
         private int Calculate(Token expr)
@@ -170,6 +189,20 @@ namespace SimpleLexer
             public override object Invoke(object arg)
             {
                 Console.WriteLine(arg);
+                return null;
+            }
+        }
+        public class DynamicFunction : FunctionBase
+        {
+            public Interpreter Context { get; set; }
+            public Token Param { get; set; }
+            public List<Token> Block { get; set; }
+
+            public override object Invoke(object arg)
+            {
+                var variable = Context.GetVariable(Context.Ident(Param));
+                variable.Value = Context.GetValue(arg);
+                Context.Body(Block);
                 return null;
             }
         }
