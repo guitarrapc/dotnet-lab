@@ -46,6 +46,14 @@ namespace SimpleLext.Tests
                     Expected = ("a", 35),
                 },
             };
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = " a = -1",
+                    Expected = ("a", -1),
+                },
+            };
         }
 
         [Theory, MemberData(nameof(GetTokens))]

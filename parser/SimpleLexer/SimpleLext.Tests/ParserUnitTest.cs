@@ -147,6 +147,28 @@ namespace SimpleLext.Tests
                     },
                 },
             };
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = " a = -1 ",
+                    Parenthis = "(a = -1)",
+                    Expected = new[] {
+                        new Token()
+                        {
+                            Kind = "sign",
+                            Value = "=",
+                            Left = new Token(){ Kind = "ident", Value = "a"},
+                            Right = new Token()
+                            {
+                                Kind = "unary",
+                                Value = "-",
+                                Left = new Token(){ Kind = "digit", Value = "1"},
+                            }
+                        },
+                    },
+                },
+            };
         }
 
         [Theory, MemberData(nameof(GetTokens))]

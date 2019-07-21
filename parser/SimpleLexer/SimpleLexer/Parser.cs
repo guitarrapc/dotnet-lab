@@ -10,6 +10,7 @@ namespace SimpleLexer
         private readonly List<string> factorKinds;
         private readonly List<string> binaryKinds;
         private readonly List<string> rightAssociates;
+        private readonly List<string> unaryOperators;
 
         private readonly Token endOfToken = new Token()
         {
@@ -25,6 +26,7 @@ namespace SimpleLexer
             degrees = new Dictionary<string, int>()
             {
               {"(", 80},
+              // unaryoperators: 70
               {"*", 60},
               {"/", 60},
               {"+", 50},
@@ -35,6 +37,7 @@ namespace SimpleLexer
             factorKinds = new List<string>() { "digit", "ident" };
             binaryKinds = new List<string>() { "sign" };
             rightAssociates = new List<string>() { "=" };
+            unaryOperators = new List<string>() { "+", "-" };
         }
 
         public Parser Set(List<Token> tokens)
@@ -73,6 +76,13 @@ namespace SimpleLexer
         {
             if (factorKinds.Contains(token.Kind))
             {
+                return token;
+            }
+            if (unaryOperators.Contains(token.Value))
+            {
+                // override
+                token.Kind = "unary";
+                token.Left = Express(70);
                 return token;
             }
             if (token.Kind.Equals("parenthesis") && token.Value.Equals("("))

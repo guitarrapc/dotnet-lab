@@ -99,7 +99,7 @@ namespace SimpleLexer
         // detect token
         private bool IsSigneStart(char c)
         {
-            return c == '=' || c == '+' || c == 'c' || c == '*' || c == '/';
+            return c == '=' || c == '+' || c == '-' || c == 'c' || c == '*' || c == '/';
         }
         private Token Sign()
         {

@@ -44,6 +44,8 @@ namespace SimpleLexer
                     return Invoke(expr);
                 case "sign" when expr.Value.Equals("="):
                     return Assign(expr);
+                case "unary":
+                    return UnaryCalculate(expr);
                 case "sign":
                     return Calculate(expr);
                 default:
@@ -128,6 +130,19 @@ namespace SimpleLexer
                     return left / right;
                 default:
                     throw new Exception("Unknown sign for calulate");
+            }
+        }
+        private int UnaryCalculate(Token expr)
+        {
+            var left = GetValue(Express(expr.Left));
+            switch (expr.Value)
+            {
+                case "+":
+                    return left;
+                case "-":
+                    return -left;
+                default:
+                    throw new Exception("Unknown sign for unary calculation");
             }
         }
 
