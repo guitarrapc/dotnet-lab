@@ -179,6 +179,56 @@ namespace SimpleLext.Tests
                 },
             };
         }
+        public static IEnumerable<object[]> FunctionMultipleParamsTokens()
+        {
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "v = 0"
+                        + "function add3(a1, a2, a3) {"
+                        + "  v = a1 + a2 + a3"
+                        + "}"
+                        + "add3(1, 2, 3)"
+                        + "println(v)",
+                    Expected = new[] {
+                        new Token(){ Kind = "ident", Value = "v"},
+                        new Token(){ Kind = "sign", Value = "="},
+                        new Token(){ Kind = "digit", Value = "0"},
+                        new Token(){ Kind = "ident", Value = "function"},
+                        new Token(){ Kind = "ident", Value = "add3"},
+                        new Token(){ Kind = "parenthesis", Value = "("},
+                        new Token(){ Kind = "ident", Value = "a1"},
+                        new Token(){ Kind = "symbol", Value = ","},
+                        new Token(){ Kind = "ident", Value = "a2"},
+                        new Token(){ Kind = "symbol", Value = ","},
+                        new Token(){ Kind = "ident", Value = "a3"},
+                        new Token(){ Kind = "parenthesis", Value = ")"},
+                        new Token(){ Kind = "curlybracket", Value = "{"},
+                        new Token(){ Kind = "ident", Value = "v"},
+                        new Token(){ Kind = "sign", Value = "="},
+                        new Token(){ Kind = "ident", Value = "a1"},
+                        new Token(){ Kind = "sign", Value = "+"},
+                        new Token(){ Kind = "ident", Value = "a2"},
+                        new Token(){ Kind = "sign", Value = "+"},
+                        new Token(){ Kind = "ident", Value = "a3"},
+                        new Token(){ Kind = "endofblock", Value = "}"},
+                        new Token(){ Kind = "ident", Value = "add3"},
+                        new Token(){ Kind = "parenthesis", Value = "("},
+                        new Token(){ Kind = "digit", Value = "1"},
+                        new Token(){ Kind = "symbol", Value = ","},
+                        new Token(){ Kind = "digit", Value = "2"},
+                        new Token(){ Kind = "symbol", Value = ","},
+                        new Token(){ Kind = "digit", Value = "3"},
+                        new Token(){ Kind = "parenthesis", Value = ")"},
+                        new Token(){ Kind = "ident", Value = "println"},
+                        new Token(){ Kind = "parenthesis", Value = "("},
+                        new Token(){ Kind = "ident", Value = "v"},
+                        new Token(){ Kind = "parenthesis", Value = ")"},
+                    },
+                },
+            };
+        }
 
         [Theory, MemberData(nameof(SimpleTokens))]
         public void SimpleTokenizeTest(Data data)
@@ -200,6 +250,9 @@ namespace SimpleLext.Tests
             => TestCore(data);
         [Theory, MemberData(nameof(FunctionTokens))]
         public void FunctionTokenizeTest(Data data)
+            => TestCore(data);
+        [Theory, MemberData(nameof(FunctionMultipleParamsTokens))]
+        public void FunctionMultipleParamsTokensTest(Data data)
             => TestCore(data);
 
         private void TestCore(Data data)

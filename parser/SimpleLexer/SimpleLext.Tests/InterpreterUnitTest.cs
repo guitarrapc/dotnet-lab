@@ -107,6 +107,28 @@ namespace SimpleLext.Tests
                 },
             };
         }
+        public static IEnumerable<object[]> FunctionMultipleParamsTokens()
+        {
+            yield return new[]
+            {
+                new Data
+                {
+                    Input = "v = 0"
+                        + "function add3(a1, a2, a3) {"
+                        + "  v = a1 + a2 + a3"
+                        + "}"
+                        + "add3(1, 2, 3)"
+                        + "println(v)",
+                    Expected = new []
+                    {
+                        ("v", new Interpreter.Variable { Name = "v", Value = 6 }),
+                        ("a1", new Interpreter.Variable { Name = "a1", Value = 1 }),
+                        ("a2", new Interpreter.Variable { Name = "a2", Value = 2 }),
+                        ("a3", new Interpreter.Variable { Name = "a3", Value = 3 }),
+                    },
+                },
+            };
+        }
 
         [Theory, MemberData(nameof(SimpleTokens))]
         public void SimpleTokenizeTest(Data data)
@@ -128,6 +150,9 @@ namespace SimpleLext.Tests
             => TestCore(data);
         [Theory, MemberData(nameof(FunctionTokens))]
         public void FunctionTokenizeTest(Data data)
+            => TestCore(data);
+        [Theory, MemberData(nameof(FunctionMultipleParamsTokens))]
+        public void FunctionMultipleParamsTokensTest(Data data)
             => TestCore(data);
 
         public void TestCore(Data data)

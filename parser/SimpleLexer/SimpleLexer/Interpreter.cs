@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SimpleLexer
@@ -106,8 +107,12 @@ namespace SimpleLexer
         private object Invoke(Token expr)
         {
             var f = Function(Express(expr.Left));
-            var value = GetValue(Express(expr.Right));
-            return f.Invoke(value);
+            var values = new List<object>();
+            foreach (var param in expr.Params)
+            {
+                values.Add(GetValue(Express(param)));
+            }
+            return f.Invoke(values);
         }
         private FunctionBase Function(object value)
         {
@@ -122,11 +127,19 @@ namespace SimpleLexer
                 throw new ArgumentException("Name was used");
             if (variables.ContainsKey(name))
                 throw new ArgumentException("Name was used");
+            var paramCheckList = new List<string>();
+            foreach (var item in token.Params)
+            {
+                var param = item.Value;
+                if (paramCheckList.Contains(param))
+                    throw new Exception("Parameter name was already used");
+                paramCheckList.Add(param);
+            }
             var func = new DynamicFunction()
             {
                 Context = this,
                 Name = name,
-                Param = token.Param,
+                Params = token.Params,
                 Block = token.Block,
             };
             functions[name] = func;
@@ -178,7 +191,7 @@ namespace SimpleLexer
         public abstract class FunctionBase
         {
             public string Name { get; set; }
-            public abstract object Invoke(object arg);
+            public abstract object Invoke(List<object> args);
         }
         public class Println : FunctionBase
         {
@@ -186,22 +199,36 @@ namespace SimpleLexer
             {
                 Name = "println";
             }
-            public override object Invoke(object arg)
+            public override object Invoke(List<object> args)
             {
-                Console.WriteLine(arg);
+                foreach (var arg in args)
+                {
+                    Console.WriteLine(arg);
+                }
                 return null;
             }
         }
         public class DynamicFunction : FunctionBase
         {
             public Interpreter Context { get; set; }
-            public Token Param { get; set; }
+            public List<Token> Params { get; set; }
             public List<Token> Block { get; set; }
 
-            public override object Invoke(object arg)
+            public override object Invoke(List<object> args)
             {
-                var variable = Context.GetVariable(Context.Ident(Param));
-                variable.Value = Context.GetValue(arg);
+                for (var i = 0; i < Params.Count(); i++)
+                {
+                    var param = Params[i];
+                    var variable = Context.GetVariable(Context.Ident(param));
+                    if (i < args.Count())
+                    {
+                        variable.Value = Context.GetValue(args[i]);
+                    }
+                    else
+                    {
+                        variable.Value = 0;
+                    }
+                }
                 Context.Body(Block);
                 return null;
             }

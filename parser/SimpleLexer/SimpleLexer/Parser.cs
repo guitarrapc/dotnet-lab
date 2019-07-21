@@ -53,7 +53,7 @@ namespace SimpleLexer
 
         private Token Current()
         {
-            if (!tokens.Any())
+            if (tokens.Count() <= index)
                 throw new ArgumentOutOfRangeException("no more token");
             return tokens[index];
         }
@@ -65,9 +65,9 @@ namespace SimpleLexer
         }
         private Token Consume(string expectedValue)
         {
-            if (expectedValue.Equals(Current().Value))
-                return Next();
-            throw new Exception("Not expected value");
+            if (!expectedValue.Equals(Current().Value))
+                throw new Exception($"Not expected value. {expectedValue}");
+            return Next();
         }
         /// <summary>
         /// determine is token can place left or right edge of expression.
@@ -105,7 +105,16 @@ namespace SimpleLexer
             token.Kind = "function";
             token.Ident = Ident();
             Consume("(");
-            token.Param = Ident();
+            token.Params = new List<Token>();
+            if (!Current().Value.Equals(")"))
+            {
+                token.Params.Add(Ident());
+                while (!Current().Value.Equals(")"))
+                {
+                    Consume(",");
+                    token.Params.Add(Ident());
+                }
+            }
             Consume(")");
             Consume("{");
             token.Block = Block();
@@ -158,7 +167,16 @@ namespace SimpleLexer
             else if (op.Kind.Equals("parenthesis") && op.Value.Equals("("))
             {
                 op.Left = left;
-                op.Right = Express(0);
+                op.Params = new List<Token>();
+                if (!Current().Value.Equals(")"))
+                {
+                    op.Params.Add(Express(0));
+                    while (!Current().Value.Equals(")"))
+                    {
+                        Consume(",");
+                        op.Params.Add(Express(0));
+                    }
+                }
                 Consume(")");
                 return op;
             }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SimpleLexer
@@ -12,7 +13,7 @@ namespace SimpleLexer
         public Token Right { get; set; }
 
         public Token Ident { get; set; }
-        public Token Param { get; set; }
+        public List<Token> Params { get; set; }
         public List<Token> Block { get; set; }
 
         public override string ToString()
@@ -20,7 +21,10 @@ namespace SimpleLexer
 
         public string ToParenthesis()
         {
-            if (Left == null && Right == null) return Value;
+            if (Left == null && Right == null && Params == null)
+                return Value;
+            if (Left != null && Right == null && Params == null)
+                return Value + Left.ToParenthesis();
             var builder = new StringBuilder();
             builder.Append("(");
             if (Left != null)
@@ -28,6 +32,43 @@ namespace SimpleLexer
             builder.Append(Value);
             if (Right != null)
                 builder.Append(" ").Append(Right.ToParenthesis());
+            if (Left == null && Right == null && Ident != null && Value == "function")
+            {
+                // function param
+                builder.Append(" ");
+            }
+            if (Left == null && Right == null && Ident != null)
+            {
+                builder.Append(Ident.ToParenthesis());
+                builder.Append("(");
+            }
+            // function param / method param
+            if (Params != null)
+            {
+                if (Params.Count > 0)
+                {
+                    builder.Append(Params[0].ToParenthesis());
+                    for (var i = 1; i < Params.Count(); ++i)
+                    {
+                        builder.Append(", ").Append(Params[i].ToParenthesis());
+                    }
+                }
+                builder.Append(")");
+            }
+            // inside function block
+            if (Left == null && Right == null && Ident != null && Value == "function")
+            {
+                builder.Append("{");
+                builder.Append(" ");
+                if (Block.Count() > 0)
+                {
+                    for (var i = 0; i < Block.Count(); ++i)
+                    {
+                        builder.Append(Block[i].ToParenthesis());
+                    }
+                }
+                builder.Append("}");
+            }
             builder.Append(")");
             return builder.ToString();
         }
@@ -77,6 +118,7 @@ namespace SimpleLexer
             if (IsIdentStart(Current())) return Ident();
             if (IsParenthisStart(Current())) return Parenthesis();
             if (IsCurlyBracketStart(Current())) return CurlyBracket();
+            if (IsSymbolStart(Current())) return Symbol();
             throw new ArgumentOutOfRangeException("Not a character for tokens");
         }
 
@@ -186,6 +228,20 @@ namespace SimpleLexer
                 token.Kind = "endofblock";
             }
             token.Value = Next().ToString();
+            return token;
+        }
+
+        private bool IsSymbolStart(char c)
+        {
+            return c == ',';
+        }
+        private Token Symbol()
+        {
+            var token = new Token()
+            {
+                Kind = "symbol",
+                Value = Next().ToString(),
+            };
             return token;
         }
     }
