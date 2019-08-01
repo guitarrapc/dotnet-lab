@@ -1,4 +1,4 @@
-﻿using icusample.Interop;
+using icusample.Interop;
 using System;
 
 namespace ConsoleApp4
@@ -14,6 +14,7 @@ namespace ConsoleApp4
 
         public static int TextLengthInGrapheme(string text)
         {
+            //TODO: won't work....
             var iterator = Icuuc.ubrk_open(UBreakIteratorType.UBRK_CHARACTER, Icuuc.uloc_getDefault(), null, 0, out _);
             var utext = Icuuc.utext_openUChars(IntPtr.Zero, text, text.Length, out _);
             Icuuc.ubrk_setUText(iterator, utext, out _);
@@ -26,6 +27,7 @@ namespace ConsoleApp4
 
         public static void GetIcuText(string text)
         {
+            //TODO: won't work....
             var iterator = Icuuc.ubrk_open(UBreakIteratorType.UBRK_CHARACTER, Icuuc.uloc_getDefault(), null, 0, out _);
             var utext = Icuuc.utext_openUChars(IntPtr.Zero, text, text.Length, out _);
             Icuuc.ubrk_setUText(iterator, utext, out _);

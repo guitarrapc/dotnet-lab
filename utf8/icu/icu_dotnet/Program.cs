@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using Icu.BreakIterators;
@@ -11,8 +11,9 @@ namespace icu_dotnet
         {
             Console.Write("ICU\n");
             RunIcu();
-            //Console.Write("StringInfo\n");
-            //RunStringInfo();
+
+            Console.Write("StringInfo\n");
+            RunStringInfo();
         }
 
         private static void RunIcu()
