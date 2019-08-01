@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "dllimport": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

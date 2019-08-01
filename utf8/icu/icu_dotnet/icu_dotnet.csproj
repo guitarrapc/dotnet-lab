@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="icu.net" Version="2.5.4" />
-    <PackageReference Include="Icu4c.Win.Full.Lib" Version="59.1.15" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
   </ItemGroup>
 
