@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dllimport", "dllimport\dllimport.csproj", "{28DAF83D-20CC-4E69-9BB7-C7F77BD5D7DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "icu_dotnet", "icu_dotnet\icu_dotnet.csproj", "{F6904968-CC46-43BE-995E-F85F0A99DF06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28DAF83D-20CC-4E69-9BB7-C7F77BD5D7DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28DAF83D-20CC-4E69-9BB7-C7F77BD5D7DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28DAF83D-20CC-4E69-9BB7-C7F77BD5D7DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28DAF83D-20CC-4E69-9BB7-C7F77BD5D7DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6904968-CC46-43BE-995E-F85F0A99DF06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6904968-CC46-43BE-995E-F85F0A99DF06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6904968-CC46-43BE-995E-F85F0A99DF06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6904968-CC46-43BE-995E-F85F0A99DF06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A15A06CB-2F5F-4A0D-A1D7-B20EE3E3AA8A}
+	EndGlobalSection
+EndGlobal
