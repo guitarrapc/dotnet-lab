@@ -53,7 +53,7 @@ namespace WebApplicationEF.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Sbyte,Byte,ByteArray,Short,Ushort,Int,Uint,Long,Ulong,Float,Double,Bool,Bool2,String,String2,String3,Datetime,DatetimeOffset,DatetimeOffset2")] TestType testType)
+        public async Task<IActionResult> Create([Bind("Id,Sbyte,Byte,ByteArray,Short,Ushort,Int,Uint,Long,Ulong,Float,Double,Decimal,Bool,Bool2,Bool3,Char,String,String2,String3,Datetime,DatetimeOffset,DatetimeOffset2")] TestType testType)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace WebApplicationEF.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Sbyte,Byte,ByteArray,Short,Ushort,Int,Uint,Long,Ulong,Float,Double,Bool,Bool2,String,String2,String3,Datetime,DatetimeOffset,DatetimeOffset2")] TestType testType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Sbyte,Byte,ByteArray,Short,Ushort,Int,Uint,Long,Ulong,Float,Double,Decimal,Bool,Bool2,Bool3,Char,String,String2,String3,Datetime,DatetimeOffset,DatetimeOffset2")] TestType testType)
         {
             if (id != testType.Id)
             {
