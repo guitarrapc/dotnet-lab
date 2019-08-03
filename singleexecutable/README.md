@@ -38,15 +38,13 @@ dotnet publish -r win10-x64 /p:PublishSingleFile=true
 
 ## csproj
 
-You can specify single file or not in csproj.
+Not only CLI, but csproj also can specify single file or not.
 
 > TIPS: You will find prolems when mixing dotnet core 2.1 and 3.0 in csproj w/VisualStudio. see TIPS.
 
 **Split build by condition**
 
-Single Executable build will only required on CI build, not in VisualStudio or any other local build.
-
-So let's add condition for single-file.
+Single Executable build may only required on CI build, not in VisualStudio or any other local build, let's add build condition for single-file.
 
 With this sample csproj, VS will build as dotnetcore 2.1. a single-file is only generated when passing `/p:PublishSingleFile=true` to the dotnet build/publish.
 
@@ -74,7 +72,7 @@ normal dotnet publish will not generate single file and use dotnet core 2.1.
 dotnet publish -c Release
 ```
 
-But only when trying to run as single-file, dotnet core 3.0 will be used and single file are generated.
+dotnet core 3.0 will be used only when trying to generate single file.
 
 ```shell
 dotnet publish -c Release -r win10-x64 /p:PublishSingleFile=true
@@ -125,9 +123,9 @@ enable to contains IL .pdb file, and the native .ni.pdb / app.guid.map into sing
 
 ### TIPS: Visual Studio issues
 
-Make sure dotnet core 3.0 is still in preview, so Visual Stduio will have limitation with preview SDK, and also mixin multiple sdk version.
+Make sure dotnet core 3.0 is still in preview, Visual Stduio will have limitation with preview SDK, and also mixing multiple sdk version.
 
-If you build with dotnet core 3.0, and VS is using netcoreapp 2.1, you will find following error.
+If you build dotnet core 3.0 on cli and VS is using netcoreapp 2.1, you will find following error.
 
 ![image](https://user-images.githubusercontent.com/3856350/62417277-ba5c6100-b686-11e9-9111-6bece18a37ce.png)
 
