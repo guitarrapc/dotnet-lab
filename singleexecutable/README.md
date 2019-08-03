@@ -118,7 +118,7 @@ when trimmed.
 enable to contains IL .pdb file, and the native .ni.pdb / app.guid.map into single file.
 
 ```xml
-<PropertyGroup Condition="'$(singlefile)' == 'true'">
+<PropertyGroup>
   <IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>
 </PropertyGroup>
 ```
