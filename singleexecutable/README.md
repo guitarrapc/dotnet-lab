@@ -121,7 +121,7 @@ enable to contains IL .pdb file, and the native .ni.pdb / app.guid.map into sing
 </PropertyGroup>
 ```
 
-### TIPS: Visual Studio issues
+## TIPS: Visual Studio issues
 
 Make sure dotnet core 3.0 is still in preview, Visual Stduio will have limitation with preview SDK, and also mixing multiple sdk version.
 
@@ -168,4 +168,126 @@ macOS
 
 ```
 osx-x64
+```
+
+## TIPS: NuGet Global Tool
+
+Single Executable could not be NuGet Global Tool.
+
+If you add following to handle nuget as a single executable, you will get error on publish, not on build.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>test</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>guitarrapc</Authors>
+    <Copyright>guitarrapc</Copyright>
+    <Description>Test.</Description>
+    <PackageProjectUrl>https://github.com/guitarrapc/dotnet-lab</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>
+  </PropertyGroup>
+
+</Project>
+
+```
+
+Error seems here, and show `ComputeManagedAssemblies` issue. 
+
+```
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018: The "ComputeManagedAssemblies" task failed unexpectedly. [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018: System.IO.FileNotFoundException: Could not find file 'D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\obj\Release\netcoreapp3.0\win10-x64\GlobalToolSingleExecutable.exe'. [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018: File name: 'D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\obj\Release\netcoreapp3.0\win10-x64\GlobalToolSingleExecutable.exe' [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.IO.FileStream.ValidateFileHandle(SafeFileHandle fileHandle) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.IO.FileStream.CreateFileOpenHandle(FileMode mode, FileShare share, FileOptions options) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Mono.Cecil.ModuleDefinition.GetFileStream(String fileName, FileMode mode, FileAccess access, FileShare share) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Mono.Cecil.ModuleDefinition.ReadModule(String fileName, ReaderParameters parameters) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Mono.Cecil.ModuleDefinition.ReadModule(String fileName) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Utils.IsManagedAssembly(String fileName) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at ILLink.Tasks.ComputeManagedAssemblies.<>c.<Execute>b__8_0(ITaskItem f) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.Linq.Enumerable.WhereArrayIterator`1.ToArray() [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at ILLink.Tasks.ComputeManagedAssemblies.Execute() [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Microsoft.Build.BackEnd.TaskExecutionHost.Microsoft.Build.BackEnd.ITaskExecutionHost.Execute() [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+C:\Program Files\dotnet\sdk\3.0.100-preview7-012821\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ILLink.targets(142,5): error MSB4018:    at Microsoft.Build.BackEnd.TaskBuilder.ExecuteInstantiatedTask(ITaskExecutionHost taskExecutionHost, TaskLoggingContext taskLoggingContext, TaskHost taskHost, ItemBucket bucket, TaskExecutionMode howToExecuteTask) [D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj]
+```
+
+It's natural that NuGet Package publish failed because of runtime, it should be a Framework dependence.
+
+Solution is add condition to nuget properties to be build when it is not an single file.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishSingleFile)' != 'true'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>test</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>guitarrapc</Authors>
+    <Copyright>guitarrapc</Copyright>
+    <Description>Test.</Description>
+    <PackageProjectUrl>https://github.com/guitarrapc/dotnet-lab</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>
+  </PropertyGroup>
+
+</Project>
+```
+
+You can publish for both nuget and global tool.
+
+```shell
+$ dotnet publish
+Microsoft (R) Build Engine version 16.3.0-preview-19329-01+d31fdbf01 for .NET Core
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Restore completed in 22.88 ms for D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable.csproj.
+  GlobalToolSingleExecutable -> D:\git\guitarrapc\dotnet-lab\singleexecutable\GlobalToolSingleExecutable\GlobalToolSingleExecutable\bin\Debug\netcoreapp2.1\publish\
+```
+
+Make sure if you build one of nuget or global-tool, you need to remove /bin and `dotnet restore` and `dotnet build` to publish other.
+
+```
+# build as single executable
+dotnet restore
+dotnet publish -c Release -r win10-x64 /p:PublishSingleFile=true
+
+# remove bin/
+rm -rf ./bin/
+
+# build as nuget
+dotnet restore
+dotnet build
+dotnet publish
 ```

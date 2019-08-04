@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishSingleFile)' != 'true'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>test</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>guitarrapc</Authors>
+    <Copyright>guitarrapc</Copyright>
+    <Description>Test.</Description>
+    <PackageProjectUrl>https://github.com/guitarrapc/dotnet-lab</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>
+  </PropertyGroup>
+
+</Project>
