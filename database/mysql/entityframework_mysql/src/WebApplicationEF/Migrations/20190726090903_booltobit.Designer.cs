@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplicationEF.Data;
 
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20190726090903_booltobit")]
+    partial class booltobit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,8 +81,6 @@ namespace WebApplicationEF.Migrations
 
                     b.Property<byte[]>("ByteArray")
                         .HasMaxLength(3000);
-
-                    b.Property<char>("Char");
 
                     b.Property<DateTime>("Datetime");
 

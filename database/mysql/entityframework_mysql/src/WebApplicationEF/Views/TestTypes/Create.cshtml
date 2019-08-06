@@ -67,6 +67,11 @@
                 <input asp-for="Double" class="form-control" />
                 <span asp-validation-for="Double" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Decimal" class="control-label"></label>
+                <input asp-for="Decimal" class="form-control" />
+                <span asp-validation-for="Decimal" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Bool" /> @Html.DisplayNameFor(model => model.Bool)
@@ -76,6 +81,16 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Bool2" /> @Html.DisplayNameFor(model => model.Bool2)
                 </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Bool3" /> @Html.DisplayNameFor(model => model.Bool3)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Char" class="control-label"></label>
+                <input asp-for="Char" class="form-control" />
+                <span asp-validation-for="Char" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="String" class="control-label"></label>

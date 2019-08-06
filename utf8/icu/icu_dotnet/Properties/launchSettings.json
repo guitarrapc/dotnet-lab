@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "icu_dotnet": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

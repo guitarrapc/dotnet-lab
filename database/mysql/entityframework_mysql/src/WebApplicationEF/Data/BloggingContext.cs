@@ -53,6 +53,10 @@ namespace WebApplicationEF.Data
                 .HasConversion(new BoolToZeroOneConverter<Int16>());
             modelBuilder
                 .Entity<TestType>()
+                .Property(e => e.Bool3)
+                .HasConversion(new BoolToZeroOneConverter<Int16>());
+            modelBuilder
+                .Entity<TestType>()
                 .Property(e => e.Sbyte)
                 .HasColumnType("SMALLINT(6)");
             modelBuilder
@@ -63,6 +67,10 @@ namespace WebApplicationEF.Data
                 .Entity<TestType>()
                 .Property(e => e.Uint)
                 .HasColumnType("BIGINT(20)");
+            modelBuilder
+                .Entity<TestType>()
+                .Property(e => e.Char)
+                .HasColumnType("INT(11)");
         }
     }
 
@@ -93,32 +101,59 @@ namespace WebApplicationEF.Data
 
     public class TestType
     {
+        // INT(11)
         [Key]
         [Column(Order = 0)]
         public int Id { get; set; }
+        // SMALLINT(6)
         public sbyte Sbyte { get; set; }
+        // TINYINT(4)
         public byte Byte { get; set; }
+        // VARBINARY(3000)
         [MaxLength(3000)]
         public byte[] ByteArray { get; set; }
+        // SMALLINT(6)
         public short Short { get; set; }
+        // INT(11) UNSIGNED
         public ushort Ushort { get; set; }
+        // INT(11)
         public int Int { get; set; }
+        // BIGINT(20)
         public uint Uint { get; set; }
+        // BIGINT(20)
         public long Long { get; set; }
+        // BIGINT(20)
         // cannot map ulong to premitive, specify type.
         [Column(TypeName = "BigInt")]
         public ulong Ulong { get; set; }
+        // FLOAT
         public float Float { get; set; }
+        // DOUBLE
         public double Double { get; set; }
+        // DECIMAL
+        public decimal Decimal { get; set; }
+        // SMALLINT(6)
         public bool Bool { get; set; }
+        // TINYINT(1)
         [Column(TypeName = "TinyInt(1)")]
         public bool Bool2 { get; set; }
+        // BIT(1)
+        [Column(TypeName = "BIT(1)")]
+        public bool Bool3 { get; set; }
+        // INT(11)
+        public char Char { get; set; }
+        // TEXT
         public string String { get; set; }
+        // VARCHAR(255)
         [Column(TypeName = "VARCHAR(255)")]
         public string String2 { get; set; }
+        // VARCHAR
         public string String3 { get; set; }
+        // DATETIME
         public DateTime Datetime { get; set; }
+        // TIMESTAMP
         public DateTimeOffset DatetimeOffset { get; set; }
+        // DATETIME
         public DateTimeOffset DatetimeOffset2 { get; set; }
     }
 
