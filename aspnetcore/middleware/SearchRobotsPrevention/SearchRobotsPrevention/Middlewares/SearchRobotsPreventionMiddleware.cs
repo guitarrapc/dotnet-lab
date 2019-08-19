@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace SearchRobotsPrevention.Middleware
+namespace SearchRobotsPrevention.Middlewares
 {
     public static class SearchRobotsPreventionMiddlewareExtensions
     {
