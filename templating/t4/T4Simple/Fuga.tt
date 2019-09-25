@@ -6,7 +6,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 using System;
 
-namespace ConsoleApp6
+namespace T4Simple
 {
 	public class Fuga
 	{
