@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace SearchRobotsPrevention.Middleware
+namespace SearchRobotsPrevention.Middlewares
 {
     public static class SearchRobotsPreventionMiddlewareExtensions
     {
@@ -16,7 +16,7 @@ namespace SearchRobotsPrevention.Middleware
     public class SearchRobotsPreventionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly string _maxAge = $"max-age={TimeSpan.FromDays(1).TotalMilliseconds}";
+        private readonly string _maxAge = $"max-age={TimeSpan.FromDays(1).TotalSeconds}";
 
         public SearchRobotsPreventionMiddleware(RequestDelegate next)
         {

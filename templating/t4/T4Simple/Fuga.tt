@@ -1,0 +1,18 @@
+﻿<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System;
+
+namespace T4Simple
+{
+	public class Fuga
+	{
+		public void Piyo()
+		{
+			Console.WriteLine("Hello, World!");
+		}
+	}
+}
