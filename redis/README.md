@@ -33,7 +33,9 @@ Run following shell before run application.
 ```shell
 openssl genrsa -out certs/key.pem 4096
 openssl req -new -x509 -key certs/key.pem -out certs/cert.pem -days 1826
-openssl x509 -outform der -in certs/cert.pem -out RedisConnectionTls/cert.crt
+openssl x509 -outform der -in certs/cert.pem -out certs/cert.crt
+cp certs/cert.crt RedisConnectionConnectionStrings/.
+cp certs/cert.crt RedisConnectionTls/.
 ```
 
 Make sure you have input public ip or localhost to `Organization Name` and `Common Name` when generating cert.pem.

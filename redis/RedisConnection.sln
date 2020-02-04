@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionElastiCacheE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionTls", "RedisConnectionTls\RedisConnectionTls.csproj", "{75730A9E-F9CF-435B-944E-F10DE7326F2C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConnectionConnectionStrings", "RedisConnectionConnectionStrings\RedisConnectionConnectionStrings.csproj", "{C7DF005F-0D00-4A51-80D2-F8384BB5027B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75730A9E-F9CF-435B-944E-F10DE7326F2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7DF005F-0D00-4A51-80D2-F8384BB5027B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7DF005F-0D00-4A51-80D2-F8384BB5027B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7DF005F-0D00-4A51-80D2-F8384BB5027B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7DF005F-0D00-4A51-80D2-F8384BB5027B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
