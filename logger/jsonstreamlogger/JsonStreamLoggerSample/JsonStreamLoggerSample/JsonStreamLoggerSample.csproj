@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>d53754bf-effb-4d69-b6dc-4eb15a31361e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonStreamLogger" Version="0.3.1" />
+  </ItemGroup>
+
+</Project>
