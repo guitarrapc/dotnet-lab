@@ -32,6 +32,7 @@ namespace JsonStreamLoggerSample.Controllers
             _logger.LogInformation(@"This is Katakana : カタカナ");
             _logger.LogInformation(@"This is Kanji : 漢字");
             _logger.LogInformation(@"This is Sarrogate Kanji : 𩸽");
+            _logger.LogError(new ArgumentException("hogemoge"), "exception!!!");
             return View();
         }
 

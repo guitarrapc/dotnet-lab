@@ -22,6 +22,7 @@ namespace JsonStreamLoggerSample
             {
                 logging.ClearProviders();
                 logging.AddJsonStream(configure => configure.WriterFactory = (stream) => new CustomJsonEntryWriter(stream));
+                //logging.AddJsonStream(configure => configure.WriterFactory = (stream) => new SimpleWriter(stream));
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
