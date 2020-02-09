@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +25,13 @@ namespace JsonStreamLoggerSample.Controllers
 
         public IActionResult Privacy()
         {
+            _logger.LogInformation(@"SELECT * FROM HOGE WHERE ITEM = ""hoge's hogemoge."";");
+            // !\u0022#$%\u0026\u0027()=~|-^\\@[\u0060{;:]\u002B*},./\u003C\u003E?_
+            _logger.LogInformation(@"This is Ascii Keywords: !""#$%&'()=~|-^\@[`{;:]+*},./<>?_");
+            _logger.LogInformation(@"This is Hiragana : ひらがな");
+            _logger.LogInformation(@"This is Katakana : カタカナ");
+            _logger.LogInformation(@"This is Kanji : 漢字");
+            _logger.LogInformation(@"This is Sarrogate Kanji : 𩸽");
             return View();
         }
 
