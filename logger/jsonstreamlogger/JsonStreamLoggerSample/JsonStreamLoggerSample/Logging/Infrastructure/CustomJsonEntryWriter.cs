@@ -3,14 +3,12 @@ using JsonStreamLogger.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Unicode;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JsonStreamLoggerSample
+namespace JsonStreamLoggerSample.Logging.Infrastructure
 {
     public class CustomJsonEntryWriter : IEntryWriter
     {
