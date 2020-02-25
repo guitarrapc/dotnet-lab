@@ -18,11 +18,23 @@ Make sure you can not load linux dump on Windows.
 unzip `core_MemoryLeak.WorkstationGC.202002181232.dump.zip` and run.
 
 ```shell
-dotnet run - run -i ./core_MemoryLeak.WorkstationGC.202002181232.dump
+dotnet run - file -i ./core_MemoryLeak.WorkstationGC.202002181232.dump
 ```
+
+send to k8s pod and run.
+
+```shell
+dotnet run - process -i 1
+```
+
 
 ## REF
 
 > * [microsoft/clrmd: Microsoft\.Diagnostics\.Runtime](https://github.com/microsoft/clrmd)
 > * [mattwarren/HeapStringAnalyser: Analyse Memory Dumps looking at \.NET String types](https://github.com/mattwarren/HeapStringAnalyser)
 > * [DataDog/dd-trace-dotnet](https://github.com/DataDog/dd-trace-dotnet/blob/e481fc79c5742f9870b216ab6f40c81345ca95f6/src/Datadog.Trace.ClrProfiler.Native/clr_helpers.cpp)
+
+
+kubectl cp ./ClrMdLab.csproj diag-5d467584b9-vvkfk:/diag/.
+kubectl cp ./Program.cs diag-5d467584b9-vvkfk:/diag/.
+kubectl cp ./ClrmdReader.cs diag-5d467584b9-vvkfk:/diag/.
