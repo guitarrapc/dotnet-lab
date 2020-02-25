@@ -1,0 +1,7 @@
+## CLRMD
+
+unzip `core_MemoryLeak.WorkstationGC.202002181232.dump.zip` and run.
+
+```shell
+dotnet run - run -i ./core_MemoryLeak.WorkstationGC.202002181232.dump
+```

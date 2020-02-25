@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ClrMdLab": {
+      "commandName": "Project",
+      "commandLineArgs": "run -i ./core_MemoryLeak.WorkstationGC.202002181232.dump"
+    }
+  }
+}
