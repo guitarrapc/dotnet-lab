@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NamedPipeProcess": {
+      "commandName": "Project",
+      "commandLineArgs": "ps"
+    }
+  }
+}
