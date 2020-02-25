@@ -21,12 +21,30 @@ unzip `core_MemoryLeak.WorkstationGC.202002181232.dump.zip` and run.
 dotnet run - file -i ./core_MemoryLeak.WorkstationGC.202002181232.dump
 ```
 
-send to k8s pod and run.
+
+on k8s, ready dir and dump, then send to k8s pod and run.
 
 ```shell
-dotnet run - process -i 1
+mkdir /diag && cd /diag
+dotnet tool install -g dotnet-dump
+PATH=~/.dotnet/tools:$PATH
+dotnet-dump collect -p 1 -o core_linux-memory
 ```
 
+copy csproj and .cs from host to k8s.
+
+```shell
+kubectl cp ./ClrMdLab.csproj diag-5d467584b9-vvkfk:/diag/.
+kubectl cp ./Program.cs diag-5d467584b9-vvkfk:/diag/.
+kubectl cp ./ClrmdReader.cs diag-5d467584b9-vvkfk:/diag/.
+```
+
+then run analysis on pod.
+
+```shell
+cd /diag
+dotnet run - process -i core_linux-memory
+```
 
 ## REF
 
@@ -34,7 +52,3 @@ dotnet run - process -i 1
 > * [mattwarren/HeapStringAnalyser: Analyse Memory Dumps looking at \.NET String types](https://github.com/mattwarren/HeapStringAnalyser)
 > * [DataDog/dd-trace-dotnet](https://github.com/DataDog/dd-trace-dotnet/blob/e481fc79c5742f9870b216ab6f40c81345ca95f6/src/Datadog.Trace.ClrProfiler.Native/clr_helpers.cpp)
 
-
-kubectl cp ./ClrMdLab.csproj diag-5d467584b9-vvkfk:/diag/.
-kubectl cp ./Program.cs diag-5d467584b9-vvkfk:/diag/.
-kubectl cp ./ClrmdReader.cs diag-5d467584b9-vvkfk:/diag/.
