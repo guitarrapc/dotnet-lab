@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -7,7 +7,10 @@ namespace ClassLibrary1
 {
     public class GCMemoryStats
     {
+        // cache get property expressions.
         static readonly ConcurrentDictionary<Type, Func<object, long>[]> getPropertyCache = new ConcurrentDictionary<Type, Func<object, long>[]>();
+
+        // TODO: avoid boxing from GCMemoryInfo -> object
         public static Func<object> CreateGetGCMemoryInfoDelegateExpression()
         {
             // GOAL: Func<object> func = () => (object)GC.GetMemoryInfo();
@@ -27,7 +30,7 @@ namespace ClassLibrary1
             return lambda.Compile();
         }
 
-        public static (long highMemoryLoadThresholdBytes, long memoryLoadBytes, long totalAvailableMemoryBytes, long heapSizeBytes, long fragmentedBytes) GetGCMemoryInfoPropertieDelegateExpression(Type type, object instance)
+        public static (long highMemoryLoadThresholdBytes, long memoryLoadBytes, long totalAvailableMemoryBytes, long heapSizeBytes, long fragmentedBytes) GetGCMemoryInfoPropertieValues(Type type, object instance)
         {
             var delegates = getPropertyCache.GetOrAdd(type, t => GetGCMemoryInfoPropertieDelegates(t));
             return (

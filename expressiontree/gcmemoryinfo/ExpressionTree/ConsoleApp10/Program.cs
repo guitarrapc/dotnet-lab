@@ -1,4 +1,4 @@
-﻿using ClassLibrary1;
+using ClassLibrary1;
 using System;
 
 namespace ConsoleApp10
@@ -9,7 +9,7 @@ namespace ConsoleApp10
         {
             var method = GCMemoryStats.CreateGetGCMemoryInfoDelegateExpression();
             var result = method.Invoke();
-            var (highMemoryLoadThresholdBytes, memoryLoadBytes, totalAvailableMemoryBytes, heapSizeBytes, fragmentedBytes) = GCMemoryStats.GetGCMemoryInfoPropertieDelegateExpression(typeof(GCMemoryInfo), result);
+            var (highMemoryLoadThresholdBytes, memoryLoadBytes, totalAvailableMemoryBytes, heapSizeBytes, fragmentedBytes) = GCMemoryStats.GetGCMemoryInfoPropertieValues(typeof(GCMemoryInfo), result);
             Console.WriteLine(highMemoryLoadThresholdBytes);
             Console.WriteLine(memoryLoadBytes);
             Console.WriteLine(totalAvailableMemoryBytes);
