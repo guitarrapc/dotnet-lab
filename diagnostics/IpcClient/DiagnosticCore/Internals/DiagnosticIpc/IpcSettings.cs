@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagnosticCore
+namespace DiagnosticCore.Internals.DiagnosticIpc
 {
     internal static class IpcSettings
     {

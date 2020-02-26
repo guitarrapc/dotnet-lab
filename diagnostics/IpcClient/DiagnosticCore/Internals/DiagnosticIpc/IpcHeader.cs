@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace DiagnosticCore
+namespace DiagnosticCore.Internals.DiagnosticIpc
 {
     internal class IpcHeader
     {

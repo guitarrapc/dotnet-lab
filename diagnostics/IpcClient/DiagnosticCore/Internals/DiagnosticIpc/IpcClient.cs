@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 
-namespace DiagnosticCore
+namespace DiagnosticCore.Internals.DiagnosticIpc
 {
     internal class IpcClient
     {

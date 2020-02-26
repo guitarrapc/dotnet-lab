@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DiagnosticCore
+namespace DiagnosticCore.Internals.DiagnosticIpc
 {
     /// <summary>
     /// Different diagnostic message types that are handled by the runtime.

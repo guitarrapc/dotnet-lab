@@ -13,4 +13,6 @@
     <ProjectReference Include="..\DiagnosticCore\DiagnosticCore.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>
