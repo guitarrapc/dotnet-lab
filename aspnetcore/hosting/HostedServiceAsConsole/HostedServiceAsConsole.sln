@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedServiceAsConsole", "HostedServiceAsConsole\HostedServiceAsConsole.csproj", "{11AA1510-29D9-44F4-ADC3-DFA6FF8D6EB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedServiceAsConsole", "HostedServiceAsConsole\HostedServiceAsConsole.csproj", "{11AA1510-29D9-44F4-ADC3-DFA6FF8D6EB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedServiceWebApplication", "HostedServiceWebApplication\HostedServiceWebApplication.csproj", "{B5DDFE39-2CE3-41C0-A9BC-7B3E5E714BED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostedServiceWebApplication", "HostedServiceWebApplication\HostedServiceWebApplication.csproj", "{B5DDFE39-2CE3-41C0-A9BC-7B3E5E714BED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostedServiceWithWeb", "HostedServiceWithWeb\HostedServiceWithWeb.csproj", "{755827D7-58E5-4211-AA5C-47814AF33927}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B5DDFE39-2CE3-41C0-A9BC-7B3E5E714BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5DDFE39-2CE3-41C0-A9BC-7B3E5E714BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5DDFE39-2CE3-41C0-A9BC-7B3E5E714BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{755827D7-58E5-4211-AA5C-47814AF33927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{755827D7-58E5-4211-AA5C-47814AF33927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{755827D7-58E5-4211-AA5C-47814AF33927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{755827D7-58E5-4211-AA5C-47814AF33927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

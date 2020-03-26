@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace HostedServiceWebApplication
+namespace HostedServiceWithWeb
 {
     // #Logging timeline.
     //info: Microsoft.Hosting.Lifetime[0]
@@ -67,19 +67,16 @@ namespace HostedServiceWebApplication
     {
         public static async Task Main(string[] args)
         {
-            // multiple startup
-            await Task.WhenAll(
-                CreateHostBuilder(args)
-                    .Build()
-                    .RunAsync(),
-                CreateBuilder()
-                    .ConfigureServices((context, services) =>
-                    {
-                        // default 5sec. extend to 10 sec for Graceful shutdown
-                        services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(10));
-                    })
-                    .RunConsoleAsync()
-            );
+            // single startup with hostedservice
+            await CreateHostBuilder(args)
+                .ConfigureServices((context, services) => services.AddHostedService<ConsoleHostingService>())
+                .ConfigureServices((context, services) => services.AddSingleton<LoopModel>())
+                .ConfigureServices((context, services) =>
+                {
+                    // default 5sec. extend to 10 sec for Graceful shutdown
+                    services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(10));
+                })
+                .RunConsoleAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -88,13 +85,6 @@ namespace HostedServiceWebApplication
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-        private static IHostBuilder CreateBuilder()
-        {
-            return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) => services.AddHostedService<ConsoleHostingService>())
-                .ConfigureServices((context, services) => services.AddSingleton<LoopModel>());
-        }
     }
 
     public class ConsoleHostingService : IHostedService, IDisposable
@@ -120,7 +110,7 @@ namespace HostedServiceWebApplication
             _applicationLifetime.ApplicationStopping.Register(() => _logger.LogInformation("ApplicationStopping")); // 1 (stop) <- Before StopAsync
             _applicationLifetime.ApplicationStopped.Register(() => _logger.LogInformation("ApplicationStopped")); // 6 (stop) <- after StopAsync
             _model.StartAsync(_cts.Token).ConfigureAwait(false);
-            
+
             // must return before stop. otherwise hosting service will not stop even after Ctrl+C.
             return Task.CompletedTask;
         }
@@ -133,7 +123,7 @@ namespace HostedServiceWebApplication
             var timer = new Timer(_ =>
             {
                 _logger.LogInformation(i.ToString()); // 4 (stop)
-                i++;
+                    i++;
             }, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
 
             // cancel invoke.
