@@ -8,21 +8,61 @@ using Microsoft.Extensions.Logging;
 
 namespace HostedServiceWebApplication
 {
-    // Logging timeline.
-    //StartAsync
-    //loop...
-    //ApplicationStarted
-    //Application started. Press Ctrl+C to shut down.
-    //Hosting environment: Production
-    //Content root path: xxxxx\HostedServiceAsConsole\HostedServiceWebApplication
-    //loop...
-    //loop...
-    //loop...
-    //Application is shutting down...
-    //ApplicationStopping
-    //Application is shutting down...
-    //StopAsync
-    //ApplicationStopped
+    // #Logging timeline.
+    //info: Microsoft.Hosting.Lifetime[0]
+    //      Now listening on: https://localhost:5001
+    //info: Microsoft.Hosting.Lifetime[0]
+    //      Now listening on: http://localhost:5000
+    //info: Microsoft.Hosting.Lifetime[0]
+    //      Application started.Press Ctrl+C to shut down.
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Hosting environment: Development
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Content root path: D:\git\guitarrapc\dotnet-lab\aspnetcore\hosting\HostedServiceAsConsole\HostedServiceWebApplication
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     StartAsync
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     loop...
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     ApplicationStarted
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Application started.Press Ctrl+C to shut down.
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Hosting environment: Production
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Content root path: D:\git\guitarrapc\dotnet-lab\aspnetcore\hosting\HostedServiceAsConsole\HostedServiceWebApplication
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     loop...
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     loop...
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     loop...
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     loop...
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Application is shutting down...
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     ApplicationStopping
+    //info: Microsoft.Hosting.Lifetime[0]
+    //     Application is shutting down...
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     StopAsync
+    //info: HostedServiceWebApplication.LoopModel[0]
+    //     cancel requested in model
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //      1
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //      2
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //      3
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //      4
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //      5
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     StopAsync.DelayCompleted
+    //info: HostedServiceWebApplication.ConsoleHostingService[0]
+    //     ApplicationStopped
     public class Program
     {
         public static async Task Main(string[] args)
@@ -34,7 +74,8 @@ namespace HostedServiceWebApplication
                 CreateBuilder()
                     .ConfigureServices((context, services) =>
                     {
-                        services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(15));
+                        // default 5sec. extend to 10 sec for Graceful shutdown
+                        services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(10));
                     })
                     .RunConsoleAsync()
             );
@@ -73,10 +114,10 @@ namespace HostedServiceWebApplication
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("StartAsync"); // 1 (start)
-            _applicationLifetime.ApplicationStarted.Register(() => _logger.LogInformation("ApplicationStarted")); // 2 (start)
+            _applicationLifetime.ApplicationStarted.Register(() => _logger.LogInformation("ApplicationStarted")); // 3 (start) <- after StartAsync
 
-            _applicationLifetime.ApplicationStopping.Register(() => _logger.LogInformation("ApplicationStopping")); // 1 (stop)
-            _applicationLifetime.ApplicationStopped.Register(() => _logger.LogInformation("ApplicationStopped")); // 4 (stop)
+            _applicationLifetime.ApplicationStopping.Register(() => _logger.LogInformation("ApplicationStopping")); // 1 (stop) <- Before StopAsync
+            _applicationLifetime.ApplicationStopped.Register(() => _logger.LogInformation("ApplicationStopped")); // 6 (stop) <- after StopAsync
             _model.StartAsync(_cts.Token).ConfigureAwait(false);
             
             // must return before stop. otherwise hosting service will not stop even after Ctrl+C.
@@ -90,14 +131,18 @@ namespace HostedServiceWebApplication
             var i = 1;
             var timer = new Timer(_ =>
             {
-                _logger.LogInformation(i.ToString());
+                _logger.LogInformation(i.ToString()); // 4 (stop)
                 i++;
             }, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
 
+            // cancel invoke.
             _cts.Cancel();
-            await Task.Delay(TimeSpan.FromSeconds(10));
 
-            _logger.LogInformation("StopAsync.DelayCompleted"); // 3 (stop)
+            // do work before Shutdown
+            await Task.Delay(TimeSpan.FromSeconds(5)); // ShutdownTimeout must be longer than this delay time.
+            _logger.LogInformation("StopAsync.DelayCompleted"); // 5 (stop)
+
+            // shutdown application
             _applicationLifetime.StopApplication();
         }
 
@@ -119,10 +164,12 @@ namespace HostedServiceWebApplication
         {
             while (!ct.IsCancellationRequested)
             {
-                _logger.LogInformation("loop...");
+                _logger.LogInformation("loop..."); // 2 (start)
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
-            _logger.LogInformation("cancel requested in model");
+
+            // after cancellation
+            _logger.LogInformation("cancel requested in model"); // 3 (stop)
         }
     }
 }
