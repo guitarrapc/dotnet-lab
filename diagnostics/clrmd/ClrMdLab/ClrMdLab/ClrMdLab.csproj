@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cocona.Lite" Version="1.3.0" />
+    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="1.1.61812" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="core_MemoryLeak.WorkstationGC.202002181232.dump">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

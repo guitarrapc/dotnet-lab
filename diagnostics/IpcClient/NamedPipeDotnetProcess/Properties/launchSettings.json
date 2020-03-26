@@ -1,0 +1,8 @@
+{
+    "NamedPipeDotnetProcess": {
+        "NamedPipeDotnetProcess": {
+            "commandName": "Project",
+            "commandLineArgs": "ps"
+        }
+    }
+}
