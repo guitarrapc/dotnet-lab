@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -15,7 +16,8 @@ namespace HostedServiceAsConsole
 
         private static IHostBuilder CreateBuilder()
         {
-            return Host.CreateDefaultBuilder();
+            return Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) => services.AddHostedService<ConsoleHostingService>());
         }
     }
 
