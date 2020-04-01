@@ -19,11 +19,40 @@ Console or original hosted app will be...
 1. use `GenericHost` and `RunConsoleAsync`.
 1. use `GenericHost`, `UseConsoleLifetime()` and `RunAsync()`
 
+```csharp
+// 1
+await Host.CreateDefaultBuilder()
+    .RunConsoleAsync();
+// 2
+await Host.CreateDefaultBuilder()
+    .UseConsoleLifeTime()
+    .RunAsync();
+```
+
 If app is ASP.NET Core, then TERM signal will be handle without `UseConsoleLifetime` or `RunConsoleAsync`.
 So that original generated asp.net core code is fine, off course you can use `RunConsoleAsync` if any reason.
 
 1. use `GenericHost`, `ConfigureWebHostDefaults` and `RunAsync`.
 1. use `GenericHost`, `ConfigureWebHostDefaults` and `RunConsoleAsync`.
+
+```csharp
+// 1
+Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<Startup>();
+    })
+    .Build()
+    .RunAsync();
+
+// 2
+Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
+    {
+        webBuilder.UseStartup<Startup>();
+    })
+    .RunConsoleAaync();
+```
 
 ## IHostedService to treat Graceful shutdown TERM signal.
 
@@ -37,7 +66,7 @@ It means, if you want handle any operation when TERM signal invoked and before s
 ```csharp
 // Program.cs
 await Host.CreateDefaultBuilder()
-    .ConfigureServices((context, services) => services.AddHostedService<ConsoleHostingService>())
+    .ConfigureServices((context, services) => services.AddHostedService<MyHostingService>())
     .RunConsoleAsync();
 
 // MyHostingService
@@ -66,9 +95,12 @@ To extend this Shutdown Duration, use `IApplicationLifetime.ShutdownTimeout`.
 Here's example extend to 10 second.
 
 ```csharp
-.ConfigureServices((context, services) =>
-{
-    // default 5sec. extend to 10 sec for Graceful shutdown
-    services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(10));
-})
+await Host.CreateDefaultBuilder()
+    .ConfigureServices((context, services) =>
+    {
+        // default 5sec. extend to 10 sec for Graceful shutdown
+        services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromSeconds(10));
+    })
+    .ConfigureServices((context, services) => services.AddHostedService<MyHostingService>())
+    .RunConsoleAsync();
 ```
