@@ -26,6 +26,7 @@ await Host.CreateDefaultBuilder()
 // 2
 await Host.CreateDefaultBuilder()
     .UseConsoleLifeTime()
+    .Build()
     .RunAsync();
 ```
 
