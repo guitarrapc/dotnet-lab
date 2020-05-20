@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./OpenTelemetrySample/Dockerfile
+    ports:
+      - 12345:12345
+      - 9184:9184
+    environment:
+      - DOTNET_ENVIRONMENT=Development"
+      - MeterExporterEndpoint=http://localhost:9184/metrics/
+      - MeterExporterHostingEndpoint=http://+:9184/metrics/
+      - TracerExporterEndpoint=http://zipkin:9411/api/v2/spans
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
