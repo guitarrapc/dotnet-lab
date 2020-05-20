@@ -6,7 +6,7 @@
 
 Prometheus metrics sample.
 
-Access to http://127.0.0.1:9181/metrics/.
+Access to http://127.0.0.1:9184/metrics/.
 
 ```
 # HELP sample_measure_initializeSamplesample/measure/initialize
