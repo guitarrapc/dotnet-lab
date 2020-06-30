@@ -41,14 +41,24 @@ namespace ServerCertificateChain
 
         private static X509Certificate2 GetLastChainExtraStoreCertificate(X509Chain chain)
         {
-            var validCert = chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
-                .Select(item =>
-                {
-                    Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
-                    return item;
-                })
-                .Reverse() // check chain last
-                .First();
+            var chainFirst = chain.ChainElements.Cast<X509ChainElement>().First();
+            var extraFirst = chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>().First();
+            var validCert = chainFirst.Certificate.Thumbprint == extraFirst.Thumbprint
+                ? chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
+                    .Select(item =>
+                    {
+                        Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
+                        return item;
+                    })
+                    .Reverse() // check chain last
+                    .First()
+                : chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
+                    .Select(item =>
+                    {
+                        Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
+                        return item;
+                    })
+                    .First();
 
             Console.WriteLine($"Result Cert: {validCert.FriendlyName}, {validCert.Subject}, {validCert.Thumbprint.ToLower()}, {validCert.NotAfter}");
             return validCert;
