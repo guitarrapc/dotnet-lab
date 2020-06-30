@@ -19,3 +19,4 @@ jobs:
       - run: dotnet restore
       - run: dotnet build
       - run: dotnet run --project ./OidcCert.csproj
+      - run: echo | openssl s_client -servername oidc.eks.ap-northeast-1.amazonaws.com -showcerts -connect oidc.eks.ap-northeast-1.amazonaws.com:443 2>&- | tac | sed -n '/-----END CERTIFICATE-----/,/-----BEGIN CERTIFICATE-----/p; /-----BEGIN CERTIFICATE-----/q' | tac | openssl x509 -text -noout
