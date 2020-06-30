@@ -15,7 +15,7 @@ namespace OidcCert
             {
                 handler.ServerCertificateCustomValidationCallback += (HttpRequestMessage msg, X509Certificate2 cert, X509Chain chain, SslPolicyErrors pollyError) =>
                 {
-                    Console.WriteLine($"{cert.FriendlyName}, {cert.Subject}, {cert.Thumbprint.ToLower()}");
+                    Console.WriteLine($"PollyError: {pollyError}, Cert: {cert.FriendlyName}, {cert.Subject}, {cert.Thumbprint.ToLower()}");
                     //chain.ChainElements.Dump();
                     var validcert = chain.ChainElements.Cast<X509ChainElement>()
                     .Select(item =>
