@@ -20,4 +20,4 @@ jobs:
       - run: dotnet build
       - run: dotnet run --project ./OidcCert.csproj
       - run: echo | openssl s_client -servername oidc.eks.ap-northeast-1.amazonaws.com -showcerts -connect oidc.eks.ap-northeast-1.amazonaws.com:443 2>&- | tac | sed -n '/-----END CERTIFICATE-----/,/-----BEGIN CERTIFICATE-----/p; /-----BEGIN CERTIFICATE-----/q' | tac | openssl x509 -text -noout
-      - run: echo | openssl s_client -servername oidc.eks.ap-northeast-1.amazonaws.com -showcerts -connect oidc.eks.ap-northeast-1.amazonaws.com:443 2>&- | tac | sed -n '/-----END CERTIFICATE-----/,/-----BEGIN CERTIFICATE-----/p; /-----BEGIN CERTIFICATE-----/q' | tac | penssl x509 -fingerprint -sha1 -noout | sed 's/://g' | awk -F= '{print tolower($2)}'
+      - run: echo | openssl s_client -servername oidc.eks.ap-northeast-1.amazonaws.com -showcerts -connect oidc.eks.ap-northeast-1.amazonaws.com:443 2>&- | tac | sed -n '/-----END CERTIFICATE-----/,/-----BEGIN CERTIFICATE-----/p; /-----BEGIN CERTIFICATE-----/q' | tac | openssl x509 -fingerprint -sha1 -noout | sed 's/://g' | awk -F= '{print tolower($2)}'
