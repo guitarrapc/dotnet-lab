@@ -59,26 +59,23 @@ namespace OidcCert
             using (var client = new TcpClient())
             {
                 client.Connect(endpoint, 443);
-
-                using (var ssl = new SslStream(client.GetStream(), false,
-                    new RemoteCertificateValidationCallback(
-                            (sender, cert, chain, pollyError) =>
-                            {
-                                Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.Issuer}, {cert.Subject}");
-                                //chain.ChainElements.Dump();
-                                var validcert = chain.ChainElements.Cast<X509ChainElement>()
-                                .Select(item =>
-                                {
-                                    Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
-                                    return item;
-                                })
-                                .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
-                                .Reverse() // check chain last
-                                .First();
-                                Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
-                                return true;
-                            }
-                        ), null))
+                var ServerCertificateCustomValidationCallback = new RemoteCertificateValidationCallback((sender, cert, chain, pollyError) =>
+                {
+                    Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.Issuer}, {cert.Subject}");
+                    //chain.ChainElements.Dump();
+                    var validcert = chain.ChainElements.Cast<X509ChainElement>()
+                    .Select(item =>
+                    {
+                        Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
+                        return item;
+                    })
+                    .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
+                    .Reverse() // check chain last
+                    .First();
+                    Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
+                    return true;
+                });
+                using (var ssl = new SslStream(client.GetStream(), false, ServerCertificateCustomValidationCallback, null))
                 {
                     await ssl.AuthenticateAsClientAsync(endpoint);
                     var cert = new X509Certificate2(ssl.RemoteCertificate);
