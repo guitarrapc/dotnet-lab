@@ -1,0 +1,21 @@
+name: aws/OidcCert
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    defaults:
+      run:
+        working-directory: ./aws/OidcCert/OidcCert
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1
+      - run: dotnet restore
+      - run: dotnet build
+      - run: dotnet run --project ./OidcCert.csproj
