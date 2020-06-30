@@ -24,6 +24,37 @@ namespace OidcCert
             await DownloadSslCertificateSocket(endpoint);
         }
 
+        private static X509ChainElement GetLastChainCertificate(X509Chain chain)
+        {
+            var validcert = chain.ChainElements.Cast<X509ChainElement>()
+                .Select(item =>
+                {
+                    Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
+                    return item;
+                })
+                .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
+                .Reverse() // check chain last
+                .First();
+
+            Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
+            return validcert;
+        }
+
+        private static X509Certificate2 GetLastChainExtraStoreCertificate(X509Chain chain)
+        {
+            var validCert = chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
+                .Select(item =>
+                {
+                    Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
+                    return item;
+                })
+                .Reverse() // check chain last
+                .First();
+
+            Console.WriteLine($"Result Cert: {validCert.FriendlyName}, {validCert.Subject}, {validCert.Thumbprint.ToLower()}, {validCert.NotAfter}");
+            return validCert;
+        }
+
         public static async Task DownloadSslCertificateHttp(string endpoint)
         {
             var url = new Uri($"https://{endpoint}:443");
@@ -32,18 +63,8 @@ namespace OidcCert
             {
                 Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.FriendlyName}, {cert.Subject}, {cert.Thumbprint.ToLower()}");
 
-                //chain.ChainElements.Dump();
-                var validcert = chain.ChainElements.Cast<X509ChainElement>()
-                .Select(item =>
-                {
-                Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
-                return item;
-                })
-                .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
-                .Reverse() // check chain last
-                .First();
-
-                Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
+                var validcert = GetLastChainCertificate(chain);
+                var validExtraCert = GetLastChainExtraStoreCertificate(chain);
                 return chain.Build(cert);
             };
 
@@ -57,20 +78,11 @@ namespace OidcCert
             client.Connect(endpoint, 443);
             var ServerCertificateCustomValidationCallback = new RemoteCertificateValidationCallback((sender, cert, chain, pollyError) =>
             {
-                Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.Issuer}, {cert.Subject}");
+                var cert2 = (X509Certificate2)cert;
+                Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert2.FriendlyName}, {cert2.Subject}, {cert2.Thumbprint.ToLower()}");
 
-                //chain.ChainElements.Dump();
-                var validcert = chain.ChainElements.Cast<X509ChainElement>()
-                .Select(item =>
-                {
-                    Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
-                    return item;
-                })
-                .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
-                .Reverse() // check chain last
-                .First();
-
-                Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
+                var validcert = GetLastChainCertificate(chain);
+                var validExtraCert = GetLastChainExtraStoreCertificate(chain);
                 return true;
             });
             using var ssl = new SslStream(client.GetStream(), false, ServerCertificateCustomValidationCallback, null);
@@ -85,20 +97,11 @@ namespace OidcCert
             client.Connect(endpoint, 443);
             var ServerCertificateCustomValidationCallback = new RemoteCertificateValidationCallback((sender, cert, chain, pollyError) =>
             {
-                Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.Issuer}, {cert.Subject}");
+                var cert2 = (X509Certificate2)cert;
+                Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert2.FriendlyName}, {cert2.Subject}, {cert2.Thumbprint.ToLower()}");
 
-                //chain.ChainElements.Dump();
-                var validcert = chain.ChainElements.Cast<X509ChainElement>()
-                .Select(item =>
-                {
-                    Console.WriteLine($"{item.Certificate.FriendlyName}, {item.Certificate.Subject}, {item.Certificate.Thumbprint.ToLower()}, {item.Certificate.NotAfter}");
-                    return item;
-                })
-                .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
-                .Reverse() // check chain last
-                .First();
-
-                Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
+                var validcert = GetLastChainCertificate(chain);
+                var validExtraCert = GetLastChainExtraStoreCertificate(chain);
                 return true;
             });
             using var ssl = new SslStream(new NetworkStream(client), false, ServerCertificateCustomValidationCallback, null);
