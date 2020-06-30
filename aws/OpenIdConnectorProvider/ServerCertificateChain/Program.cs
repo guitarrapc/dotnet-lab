@@ -32,8 +32,7 @@ namespace ServerCertificateChain
                     return item;
                 })
                 .Where(x => x.Certificate.Extensions.Cast<X509Extension>().Any(x => x.Critical))
-                .Reverse() // check chain last
-                .First();
+                .Last(); // check chain last
 
             Console.WriteLine($"Result Cert: {validcert.Certificate.FriendlyName}, {validcert.Certificate.Subject}, {validcert.Certificate.Thumbprint.ToLower()}, {validcert.Certificate.NotAfter}");
             return validcert;
@@ -41,24 +40,18 @@ namespace ServerCertificateChain
 
         private static X509Certificate2 GetLastChainExtraStoreCertificate(X509Chain chain)
         {
+            // Windows extrastore order 
             var chainFirst = chain.ChainElements.Cast<X509ChainElement>().First();
             var extraFirst = chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>().First();
+            var chains = chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
+                .Select(item =>
+                {
+                    Console.WriteLine($"{Environment.OSVersion.Platform}, {item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
+                    return item;
+                });
             var validCert = chainFirst.Certificate.Thumbprint == extraFirst.Thumbprint
-                ? chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
-                    .Select(item =>
-                    {
-                        Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
-                        return item;
-                    })
-                    .Reverse() // check chain last
-                    .First()
-                : chain.ChainPolicy.ExtraStore.Cast<X509Certificate2>()
-                    .Select(item =>
-                    {
-                        Console.WriteLine($"{item.FriendlyName}, {item.Subject}, {item.Thumbprint.ToLower()}, {item.NotAfter}");
-                        return item;
-                    })
-                    .First();
+                ? chains.Last() // check chain last. may be linux
+                : chains.First(); // may be windows
 
             Console.WriteLine($"Result Cert: {validCert.FriendlyName}, {validCert.Subject}, {validCert.Thumbprint.ToLower()}, {validCert.NotAfter}");
             return validCert;
