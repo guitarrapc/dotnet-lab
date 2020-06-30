@@ -12,11 +12,11 @@ namespace OidcCert
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             var endpoint = new Uri($"https://oidc.eks.ap-northeast-1.amazonaws.com:443");
-            using (var handler = new CustomHttpClientHandler())
+            using (var handler = new HttpClientHandler())
             {
                 handler.ServerCertificateCustomValidationCallback += (HttpRequestMessage msg, X509Certificate2 cert, X509Chain chain, SslPolicyErrors pollyError) =>
                 {
-                    Console.WriteLine($"PollyError: {pollyError}, Cert: {cert.FriendlyName}, {cert.Subject}, {cert.Thumbprint.ToLower()}");
+                    Console.WriteLine($"{chain.ChainElements.Count} chains, PollyError: {pollyError}, Cert: {cert.FriendlyName}, {cert.Subject}, {cert.Thumbprint.ToLower()}");
                     //chain.ChainElements.Dump();
                     var validcert = chain.ChainElements.Cast<X509ChainElement>()
                     .Select(item =>
@@ -40,41 +40,6 @@ namespace OidcCert
                     }
                 }
             }
-        }
-    }
-
-    public class CustomHttpClientHandler : HttpClientHandler
-    {
-        public CustomHttpClientHandler()
-        {
-            ServerCertificateCustomValidationCallback = VerifyServerCertificate;
-        }
-
-        private bool VerifyServerCertificate(
-          HttpRequestMessage message,
-          X509Certificate certificate,
-          X509Chain chain,
-          SslPolicyErrors sslPolicyErrors)
-        {
-            // If the certificate is a valid, signed certificate, return true.
-            if (sslPolicyErrors == SslPolicyErrors.None)
-            {
-                return true;
-            }
-
-            // If there are errors in the certificate chain, look at each error to determine the cause.
-            if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0)
-            {
-                chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-
-                chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
-                var isValid = chain.Build((X509Certificate2)certificate);
-
-                return isValid;
-            }
-
-            // In all other cases, return false.
-            return false;
         }
     }
 }
