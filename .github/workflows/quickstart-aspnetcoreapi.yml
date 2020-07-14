@@ -1,0 +1,22 @@
+name: quickstart/aspnetcoreapi
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1
+      - uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: guitarrapc/asptnetcoreapi-quickstart
+          username: ${{ secrets.SYNCED_DOCKER_USER }}
+          password: ${{ secrets.SYNCED_DOCKER_PASS }}
+          dockerfile: aspnetcore-api-quickstart/Dockerfile
+          workdir: quickstart/aspnetcoreapi
