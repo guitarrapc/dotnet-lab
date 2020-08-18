@@ -2,15 +2,29 @@
 
 @using TodoList.Data
 
-<h3>Todo</h3>
+<h3>Todo (@todos.Count(todo => !todo.IsDone))</h3>
 
+<h4>todos</h4>
 <ul>
     @foreach (var todo in todos)
     {
-        <li>@todo.Title</li>
+        <li>
+            <input type="checkbox" @onchange="e => MoveComplete(e, todo)" />
+            <input @bind="todo.Title" />
+        </li>
     }
 </ul>
 
+<h4>completed</h4>
+<ul>
+    @foreach (var todo in completes)
+    {
+        <li>
+            <input type="checkbox" checked @onchange="e => MoveTodo(e, todo)" />
+            <input @bind="todo.Title" />
+        </li>
+    }
+</ul>
 <input placeholder="Something todo" @bind="newTodo" />
 <button @onclick="AddTodo">Add todo</button>
 
@@ -18,13 +32,38 @@
     private IList<TodoItem> todos = new List<TodoItem>();
     private string newTodo;
 
+    private IList<TodoItem> completes = new List<TodoItem>();
+
     private void AddTodo()
     {
-        Console.WriteLine(newTodo);
         if (!string.IsNullOrWhiteSpace(newTodo))
         {
             todos.Add(new TodoItem { Title = newTodo });
             newTodo = string.Empty;
+        }
+    }
+
+    private void MoveComplete(ChangeEventArgs e, TodoItem todo)
+    {
+        todo.IsDone = (bool)e.Value;
+        if (todo.IsDone)
+        {
+            if (todos.Remove(todo))
+            {
+                completes.Add(todo);
+            }
+        }
+    }
+
+    private void MoveTodo(ChangeEventArgs e, TodoItem todo)
+    {
+        todo.IsDone = (bool)e.Value;
+        if (!todo.IsDone)
+        {
+            if (completes.Remove(todo))
+            {
+                todos.Add(todo);
+            }
         }
     }
 }
