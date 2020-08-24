@@ -1,0 +1,20 @@
+<h3>Fruit bowl</h3>
+<p>Fruit bowl contains @FruitName</p>
+
+<button @onclick="ChangeFruit">Change Parent Fruit</button>
+<button @onclick="ChangeChildFruit">Change Child Fruit</button>
+
+@code {
+    [CascadingParameter] string FruitName { get; set; }
+    [Parameter] public Action<string> OnFruitChange { get; set; }
+
+    private void ChangeFruit()
+    {
+        OnFruitChange?.Invoke("Pineapple");
+    }
+
+    private void ChangeChildFruit()
+    {
+        FruitName = "Cherry";
+    }
+}

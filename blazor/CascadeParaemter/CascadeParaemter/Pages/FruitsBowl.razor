@@ -1,0 +1,21 @@
+@page "/fruitsbowl"
+@using CascadeParaemter.Components
+
+<h3>FruitsBowl Page</h3>
+
+<p>@Fruit</p>
+
+<CascadingValue Value="@Fruit">
+    <FruitBowl OnFruitChange="ChangeFruit"></FruitBowl>
+    <LunchBox></LunchBox>
+</CascadingValue>
+
+@code {
+    string Fruit { get; set; } = "Kiwi";
+
+    private void ChangeFruit(string newFruit)
+    {
+        Fruit = newFruit;
+        StateHasChanged();
+    }
+}
