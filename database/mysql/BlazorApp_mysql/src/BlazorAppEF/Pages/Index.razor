@@ -1,0 +1,26 @@
+﻿@page "/"
+@using BlazorAppEF.Services
+@using BlazorAppEF.Models
+@inject SystemService SystemService
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<h2>System Info</h2>
+<p>HostName: @systemModel.HostName</p>
+<p>IPAddress: @systemModel.HostIp</p>
+
+<h2>Pool Info</h2>
+<p>ConnectionStrings: @systemModel.ConnectionString</p>
+<p>IsConnectionPooling: @systemModel.IsFromConnectionPool</p>
+<p>PoolCount: @systemModel.ConnectionPoolCount</p>
+
+@code {
+    private SystemModel systemModel;
+
+    protected override void OnInitialized()
+    {
+        systemModel = SystemService.GetSystemInfo();
+    }
+}

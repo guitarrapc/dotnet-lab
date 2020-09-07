@@ -1,0 +1,11 @@
+﻿@page "/blog"
+@using BlazorAppEF.Services
+@inject BlogService blogService
+
+@code {
+    private BlazorAppEF.Data.Blog[] _blogs;
+    protected override async Task OnInitializedAsync()
+    {
+        _blogs = await blogService.GetAll();
+    }
+}

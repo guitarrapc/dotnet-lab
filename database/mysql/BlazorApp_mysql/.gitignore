@@ -1,0 +1,3 @@
+sql/data_conv/*.csv
+*.log
+.db/

@@ -1,0 +1,61 @@
+version: "3"
+
+networks:
+  front:
+    driver: bridge
+  db:
+    driver: bridge
+
+services:
+  # nginx:
+  #   depends_on: [web]
+  #   image: nginx:latest
+  #   ports:
+  #     - 8081:80
+  #   volumes:
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #   command: /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
+  #   networks:
+  #     - front
+
+  # web:
+  #   depends_on: [migration]
+  #   image: blazor_mysql_ef
+  #   build:
+  #     context: ./src
+  #     dockerfile: ./BlazorAppEF/Dockerfile
+  #   ports:
+  #     - 80
+  #   environment:
+  #     ConnectionStrings__BloggingDatabase: "server=mysql;database=mysql_ef;user=root;password=mysql"
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #   networks:
+  #     - front
+  #     - db
+
+  mysql:
+    image: mysql:5.7.12
+    command: --character-set-server=utf8mb4
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./sql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./.db/data:/var/lib/mysql
+    networks:
+      - db
+
+  migration:
+    depends_on: [mysql]
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+    entrypoint: ./migration.sh
+    working_dir: /src
+    volumes:
+      - ./src/BlazorAppEF/:/src/
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    networks:
+      - db
