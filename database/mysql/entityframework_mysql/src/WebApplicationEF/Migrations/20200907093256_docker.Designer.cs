@@ -9,14 +9,14 @@ using WebApplicationEF.Data;
 namespace WebApplicationEF.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20190726090903_booltobit")]
-    partial class booltobit
+    [Migration("20200907093256_docker")]
+    partial class docker
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("WebApplicationEF.Data.Blog", b =>
                 {
@@ -81,6 +81,9 @@ namespace WebApplicationEF.Migrations
 
                     b.Property<byte[]>("ByteArray")
                         .HasMaxLength(3000);
+
+                    b.Property<int>("Char")
+                        .HasColumnType("INT(11)");
 
                     b.Property<DateTime>("Datetime");
 

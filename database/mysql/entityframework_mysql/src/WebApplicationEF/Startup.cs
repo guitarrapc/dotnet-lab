@@ -38,7 +38,6 @@ namespace WebApplicationEF
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var connection = Configuration.GetConnectionString("BloggingDatabase");
             // do not use raw DbContext, but use DbContext Pooling for higher performance and low impact to DB Server.
             // ref: https://docs.microsoft.com/ja-jp/ef/core/what-is-new/ef-core-2.0
             // No pooling
@@ -47,13 +46,14 @@ namespace WebApplicationEF
             // Pooling
             // basic: https://github.com/aspnet/EntityFrameworkCore/issues/10169
             // optimization: https://rehansaeed.com/optimally-configuring-entity-framework-core/
-            var connectionBuilder = new SqlConnectionStringBuilder(connection)
+            var connectionBuilder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("BloggingDatabase"))
             {
                 // connection retry parameters not supported on mysql
                 //ConnectRetryCount = 5,
                 //ConnectRetryInterval = 2,
                 MaxPoolSize = 128, // default 128 connections
                 MinPoolSize = 100,
+                
             };
             // options => options.EnableRetryOnFailure() not supported on mysql
             services.AddDbContextPool<BloggingContext>(optionBuilder => optionBuilder.UseMySQL(connectionBuilder.ConnectionString)
@@ -62,7 +62,7 @@ namespace WebApplicationEF
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             // DI
-            services.AddTransient<IBlogUseCase, UserUseCase>();
+            services.AddTransient<IBlogUseCase, BlogUseCase>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

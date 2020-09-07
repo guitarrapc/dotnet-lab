@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApplicationEF.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class docker : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,25 +21,47 @@ namespace WebApplicationEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TestTable",
+                columns: table => new
+                {
+                    Number = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Name = table.Column<string>(type: "VARCHAR(50)", nullable: true),
+                    Url = table.Column<string>(type: "VARCHAR(255)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestTable", x => x.Number);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TestType",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
-                    Sbyte = table.Column<short>(nullable: false),
+                    Sbyte = table.Column<short>(type: "SMALLINT(6)", nullable: false),
                     Byte = table.Column<byte>(nullable: false),
+                    ByteArray = table.Column<byte[]>(maxLength: 3000, nullable: true),
                     Short = table.Column<short>(nullable: false),
-                    Ushort = table.Column<int>(nullable: false),
+                    Ushort = table.Column<int>(type: "INT(11)", nullable: false),
                     Int = table.Column<int>(nullable: false),
-                    Uint = table.Column<long>(nullable: false),
+                    Uint = table.Column<long>(type: "BIGINT(20)", nullable: false),
                     Long = table.Column<long>(nullable: false),
                     Ulong = table.Column<long>(type: "BigInt", nullable: false),
                     Float = table.Column<float>(nullable: false),
                     Double = table.Column<double>(nullable: false),
+                    Decimal = table.Column<decimal>(nullable: false),
                     Bool = table.Column<short>(nullable: false),
+                    Bool2 = table.Column<byte>(type: "TinyInt(1)", nullable: false),
+                    Bool3 = table.Column<short>(type: "BIT(1)", nullable: false),
+                    Char = table.Column<int>(type: "INT(11)", nullable: false),
                     String = table.Column<string>(nullable: true),
+                    String2 = table.Column<string>(type: "VARCHAR(255)", nullable: true),
+                    String3 = table.Column<string>(type: "VARCHAR(255)", nullable: true),
                     Datetime = table.Column<DateTime>(nullable: false),
-                    DatetimeOffset = table.Column<DateTimeOffset>(nullable: false)
+                    DatetimeOffset = table.Column<DateTimeOffset>(nullable: false),
+                    DatetimeOffset2 = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,6 +113,9 @@ namespace WebApplicationEF.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "TestTable");
 
             migrationBuilder.DropTable(
                 name: "TestType");

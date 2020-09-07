@@ -11,10 +11,10 @@ namespace WebApplicationEF.UseCases
         Blog[] Get(int userId);
     }
 
-    public class UserUseCase : IBlogUseCase
+    public class BlogUseCase : IBlogUseCase
     {
         private readonly BloggingContext dbContext;
-        public UserUseCase(BloggingContext dbContext)
+        public BlogUseCase(BloggingContext dbContext)
         {
             this.dbContext = dbContext;
         }
