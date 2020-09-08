@@ -11,8 +11,9 @@ using Microsoft.Extensions.Hosting;
 using BlazorAppEF.Data;
 using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using BlazorAppEF.UseCases;
 using BlazorAppEF.Services;
+using System.Net.Http;
+using BlazorAppEF.Models;
 
 namespace BlazorAppEF
 {
@@ -44,11 +45,14 @@ namespace BlazorAppEF
                 .EnableSensitiveDataLogging(_environment.IsDevelopment())
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
+            // models
+            services.AddTransient<BlogModel>();
+
+            // services
             services.AddTransient<SystemService>();
             services.AddTransient<BlogService>();
         }

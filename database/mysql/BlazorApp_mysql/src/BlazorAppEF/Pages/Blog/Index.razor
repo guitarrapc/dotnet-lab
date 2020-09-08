@@ -1,0 +1,56 @@
+﻿@page "/blog"
+@using BlazorAppEF.Services
+@inject BlogService blogService
+
+<h3>Blogs</h3>
+
+<NavLink class="nav-link" href='@($"blog/create")'>Create</NavLink>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @nameof(BlazorAppEF.Shared.Models.Blog.Url)
+            </th>
+            <th>
+                "Actions"
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in blogs)
+        {
+            <tr>
+                <td>
+                    @item.Url
+                </td>
+                <td>
+                    <NavLink class="nav-link" href='@($"blog/detail/{item.BlogId}")'>Detail</NavLink>
+                    <NavLink class="nav-link" href='@($"blog/edit/{item.BlogId}")'>Edit</NavLink>
+                    <button @onclick="(e => DeleteAsync(item.BlogId))" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private BlazorAppEF.Shared.Models.Blog[] blogs = Array.Empty<BlazorAppEF.Shared.Models.Blog>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        await blogService.Delete(id);
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        blogs = await blogService.All();
+        StateHasChanged();
+    }
+}

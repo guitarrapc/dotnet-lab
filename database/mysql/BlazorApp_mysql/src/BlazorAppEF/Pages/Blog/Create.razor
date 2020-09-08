@@ -1,0 +1,32 @@
+﻿@page "/blog/create"
+@using BlazorAppEF.Services
+@inject BlogService blogService
+
+<h3>Create</h3>
+
+<EditForm Model="blog">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <p>Urls:</p>
+                <input @bind-value="blog.Url">
+                <input type="submit" @onclick="CreateAsync" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<NavLink class="nav-link" href='@($"blog")'>Back</NavLink>
+
+@code {
+    public Shared.Models.Blog blog = new Shared.Models.Blog();
+
+    private async Task CreateAsync()
+    {
+        await blogService.Create(blog);
+        blog = new Shared.Models.Blog();
+    }
+}

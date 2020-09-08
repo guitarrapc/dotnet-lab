@@ -1,0 +1,13 @@
+﻿@page "/blog/edit/{id}"
+@using BlazorAppEF.Services
+@inject BlogService blogService
+
+<h3>Edit</h3>
+
+<NavLink class="nav-link" href='@($"blog")'>Back</NavLink>
+
+@code {
+    [Parameter] public string Id { get; set; }
+
+    public Shared.Models.Blog blog = new Shared.Models.Blog();
+}

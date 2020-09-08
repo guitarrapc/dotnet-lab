@@ -1,25 +1,35 @@
-﻿using BlazorAppEF.Data;
-using BlazorAppEF.UseCases;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BlazorAppEF.Models;
+using BlazorAppEF.Shared.Models;
 using System.Threading.Tasks;
 
 namespace BlazorAppEF.Services
 {
     public class BlogService
     {
-        private readonly BlogModel _blogModel;
-        public BlogService(BloggingContext dbContext)
+        private readonly BlogModel _model;
+        public BlogService(BlogModel model)
         {
-            _blogModel = new BlogModel(dbContext);
-
+            _model = model;
         }
 
-        public Task<Blog[]> GetAll()
+        public Task<Blog[]> All()
         {
-            return _blogModel.GetAll();
+            return _model.GetAll();
+        }
+
+        public async Task Create(Blog blog)
+        {
+            await _model.Create(blog);
+        }
+
+        public async Task<Blog> Get(int id)
+        {
+            return await _model.GetByBlogId(id);
+        }
+
+        public async Task Delete(int id)
+        {
+            await _model.Delete(id);
         }
     }
 }

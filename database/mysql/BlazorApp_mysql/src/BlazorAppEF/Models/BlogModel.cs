@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorAppEF.Data;
+using BlazorAppEF.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorAppEF.UseCases
+namespace BlazorAppEF.Models
 {
     public interface IBlogModel
     {
         Task<Blog[]> GetAll();
         Task<Blog> GetByBlogId(int blogId);
-        Task<int> Create(int id, string url);
+        Task<int> Create(Blog blog);
         Task Edit(int id, Blog blog);
         Task Delete(int id);
         Task<bool> Exists(int id);
@@ -27,7 +28,9 @@ namespace BlazorAppEF.UseCases
 
         public async Task<Blog[]> GetAll()
         {
-            return await _dbContext.Blogs.ToArrayAsync();
+            return await _dbContext.Blogs
+                .OrderBy(x => x.BlogId)
+                .ToArrayAsync();
         }
 
         public async Task<Blog> GetByBlogId(int id)
@@ -35,13 +38,8 @@ namespace BlazorAppEF.UseCases
             return await _dbContext.Blogs.FindAsync(id);
         }
 
-        public async Task<int> Create(int id, string url)
+        public async Task<int> Create(Blog blog)
         {
-            var blog = new Blog()
-            {
-                BlogId = id,
-                Url = url,
-            };
             _dbContext.Add(blog);
             return await _dbContext.SaveChangesAsync();
         }

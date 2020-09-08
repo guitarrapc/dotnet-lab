@@ -1,0 +1,38 @@
+﻿@page "/blog/detail/{id}"
+@using BlazorAppEF.Services
+@inject BlogService blogService
+
+<h3>Detail</h3>
+
+@if (blog == null)
+{
+    <p>loading....</p>
+}
+else
+{
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @nameof(blog.Url)
+            </dt>
+            <dd class="col-sm-10">
+                @blog?.Url
+            </dd>
+        </dl>
+    </div>
+}
+
+<NavLink class="nav-link" href='@($"blog")'>Back</NavLink>
+
+
+@code {
+    [Parameter] public string Id { get; set; }
+
+    private Shared.Models.Blog blog;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var id = int.Parse(Id);
+        blog = await blogService.Get(id);
+    }
+}
