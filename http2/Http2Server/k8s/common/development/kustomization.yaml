@@ -1,0 +1,7 @@
+namespace: webserver
+
+bases:
+  - ../../namespace/
+  - ../../configmap/
+  - ../../app/overlays/development
+  - ../../service/overlays/development

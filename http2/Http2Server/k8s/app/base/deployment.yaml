@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  labels:
+    app: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+        - name: webserver
+          image: guitarrapc/http2-dotnet:0.1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+              name: https
+            - containerPort: 5000
+              name: http
+          env:
+            - name: ASPNETCORE_URLS
+              value: "https://0.0.0.0:5001;http://0.0.0.0:5000"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: password
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/aspnetapp.pfx
+          volumeMounts:
+            - name: web-conf
+              mountPath: /https
+      volumes:
+        - name: web-conf
+          configMap:
+            name: web-conf
+            items:
+              - key: aspnetapp.pfx
+                path: aspnetapp.pfx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: curl
+  labels:
+    app: curl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: curl
+  template:
+    metadata:
+      labels:
+        app: curl
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:latest
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do echo hello; sleep 10;done"]

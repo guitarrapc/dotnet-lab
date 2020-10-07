@@ -1,0 +1,4 @@
+configMapGenerator:
+  - name: web-conf
+    files:
+      - .aspnet/https/aspnetapp.pfx
