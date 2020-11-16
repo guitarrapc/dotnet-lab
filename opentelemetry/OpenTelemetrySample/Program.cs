@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
+using OpenTelemetry;
 using OpenTelemetry.Exporter.Prometheus;
-using OpenTelemetry.Metrics.Configuration;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Metrics.Export;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Trace.Configuration;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -41,13 +41,13 @@ namespace OpenTelemetrySample
             // Metrics (factory is cacheable)
             var processor = new UngroupedBatcher();
             var spanContext = default(SpanContext);
-            var meterFactory = MeterFactory.Create(mb =>
-            {
-                mb.SetMetricProcessor(processor);
-                mb.SetMetricExporter(exporter);
-                mb.SetMetricPushInterval(TimeSpan.FromSeconds(10));
-            });
-            var meter = meterFactory.GetMeter("Sample");
+            MeterProvider.SetDefault(Sdk.CreateMeterProviderBuilder()
+                .SetProcessor(processor)
+                .SetExporter(exporter)
+                .SetPushInterval(TimeSpan.FromSeconds(10))
+                .Build());
+            var meterProvider = MeterProvider.Default;
+            var meter = meterProvider.GetMeter("Sample");
             var counter = meter.CreateInt64Counter("sample/measure/initialize");
 
             var labels1 = new List<KeyValuePair<string, string>>();
@@ -59,85 +59,40 @@ namespace OpenTelemetrySample
             // TracerServer for Zipkin push model (in case you won't run on docker)
             // $ docker run --rm -p 9411:9411 openzipkin/zipkin
             // Tracer (factory is cacheable)
-            var traceRandom = new Random();
-            var frontTracerFactory = TracerFactory.Create(builder => builder.UseZipkin(o =>
-            {
-                o.ServiceName = "front-zipkin";
-                o.Endpoint = new Uri(tracerEndpoint);
-            }));
-            var grpcTracerFactory = TracerFactory.Create(builder => builder.UseZipkin(o =>
-            {
-                o.ServiceName = "grpc-zipkin";
-                o.Endpoint = new Uri(tracerEndpoint);
-            }));
+            using var tracerFactory = Sdk.CreateTracerProviderBuilder()
+                .AddSource("Samples.SampleClient", "Samples.SampleServer")
+                .AddZipkinExporter(o =>
+                {
+                    o.ServiceName = "front-zipkin";
+                    o.Endpoint = new Uri(tracerEndpoint);
+                })
+                .Build();
+            using var backEndTracerFactory = Sdk.CreateTracerProviderBuilder()
+                .AddSource("Samples.SampleServer.Redis", "Samples.SampleServer.Db")
+                .AddZipkinExporter(o =>
+                {
+                    o.ServiceName = "backend-zipkin";
+                    o.Endpoint = new Uri(tracerEndpoint);
+                })
+                .Build();
             Console.WriteLine($"Started Tracer Server on {tracerEndpoint}");
 
-            // Execute
+            // Execute http://0.0.0.0:19999
+            using var sample = new InstrumentationWithActivitySource();
+            sample.Start();
+
             var sw = Stopwatch.StartNew();
             while (sw.Elapsed.TotalMinutes < 10)
             {
                 // metrics
                 counter.Add(spanContext, 100, meter.GetLabelSet(labels1));
 
-                // tracer
-                await ExecuteTrace(frontTracerFactory, grpcTracerFactory, traceRandom);
-
                 await Task.Delay(1000);
                 var remaining = (10 * 60) - sw.Elapsed.TotalSeconds;
                 Console.WriteLine("Running and emitting metrics. Remaining time:" + (int)remaining + " seconds");
             }
 
-            frontTracerFactory?.Dispose();
-            grpcTracerFactory?.Dispose();
-
             metricsServer.Stop();
         }
-
-        private static async Task ExecuteTrace(TracerFactory frontTracerFactory, TracerFactory grpcTracerFactory, Random traceRandom)
-        {
-            var taskList = new List<Task>();
-
-            // service A
-            var tracer = frontTracerFactory.GetTracer("web");
-            using (tracer.StartActiveSpan($"web", out var parent))
-            {
-                tracer.CurrentSpan.SetAttribute("key", 123);
-                tracer.CurrentSpan.AddEvent("test-event");
-
-                await Task.Delay(TimeSpan.FromMilliseconds(traceRandom.Next(20, 100)));
-
-                // service B
-                var tracerGrpc = grpcTracerFactory.GetTracer("grpc");
-                var tracerGrpcRedis = grpcTracerFactory.GetTracer("redis");
-                var tracerGrpcDb = grpcTracerFactory.GetTracer("db");
-                using (tracerGrpc.StartActiveSpan("grpc", out var grpc))
-                {
-                    grpc.SetAttribute("path", "/api/user/status");
-
-                    using (tracerGrpcRedis.StartActiveSpan("redis", out var redis))
-                    {
-                        redis.SetAttribute("key", "uid-123");
-                        redis.SetAttribute("status", "up");
-                        var t1 = Task.Delay(TimeSpan.FromMilliseconds(traceRandom.Next(1, 20)));
-                        taskList.Add(t1);
-
-                        using (tracerGrpcDb.StartActiveSpan("db", out var db))
-                        {
-                            db.SetAttribute("database", "user");
-                            db.SetAttribute("table", "status");
-                            db.SetAttribute("uid", "123");
-                            var t2 = Task.Delay(TimeSpan.FromMilliseconds(traceRandom.Next(2, 50)));
-                            taskList.Add(t2);
-                        }
-                    }
-
-                    await Task.WhenAll(taskList);
-                }
-
-                await Task.Delay(TimeSpan.FromMilliseconds(traceRandom.Next(10, 50)));
-            }
-        }
-
-        private static readonly ConcurrentDictionary<Guid, string> Responses = new ConcurrentDictionary<Guid, string>();
     }
 }
